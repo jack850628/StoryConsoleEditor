@@ -1,0 +1,184 @@
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Console Editor</title>
+    
+    <script src="./dist/index.bundle.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        html, body, #app{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            background-color: #272727;
+            color: #FFFFFF;
+        }
+        .editor{
+            border-style: none;
+            flex: 1;
+        }
+        .v-main__wrap{
+            display: flex;
+            flex-direction: column;
+        }
+        .v-tabs{
+            flex: 0;
+        }
+        .v-tabs-items, .v-window__container, .v-window-item{
+            display: flex;
+            flex: 1;
+        }
+    </style>
+    <script>
+        window.onbeforeunload=function(e){  
+        　　var e = window.event || e; 
+        　　e.returnValue = "確定離開嗎？";
+        } 
+    </script>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <v-navigation-drawer v-model="drawer" dark app>
+                <v-list dark dense style="height: 100%; overflow-y: auto;">
+                    <v-subheader style="display: flex;">
+                        <span style="flex: 1;">檔案</span>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon color="deep-orange" @click="storyFileDialogOpen(storyFileDialogData.TYPE.ADD)" v-bind="attrs" v-on="on">
+                                    <v-icon color="green darken-2">mdi-plus</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>新增故事檔</span>
+                        </v-tooltip>
+                    </v-subheader>
+                    <v-list-item-group color="primary">
+                      <v-list-item @click="storyDialog = true">
+                        <v-list-item-content>
+                          <v-list-item-title v-text="'故事'"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item v-for="(item, index) in defaultFile" :key="index" @click="filesListClick(item.name)">
+                        <v-list-item-content>
+                          <v-list-item-title v-text="item.alias"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item v-for="(item, index) in storyFile" :key="index" @click="filesListClick(item)" @contextmenu="openFileMenu($event, index)">
+                        <v-list-item-content>
+                          <v-list-item-title v-text="item"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                  <v-menu v-model="showFileMenu" :position-x="fileMenuX" :position-y="fileMenuY" absolute offset-y>
+                    <v-list>
+                        <v-list-item v-for="(item, index) in showFileMenuItems" :key="index" @click="showFileMenuItemClick(index)">
+                            <v-list-item-title v-text="item"></v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </v-navigation-drawer>
+          
+            <v-app-bar color="#666666" dark app>
+                <v-app-bar-nav-icon @click="drawerClose"></v-app-bar-nav-icon>
+                <v-toolbar-title>Story Console故事編輯器 var:{{VERSION}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click="playStory" v-bind="attrs" v-on="on">
+                            <v-icon>mdi-play</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>試玩</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click="openStory" v-bind="attrs" v-on="on">
+                            <v-icon>mdi-folder-open-outline</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>開啟故事</span>
+                </v-tooltip>
+                <input id="uploadStory" type="file" accept=".zip" hidden/>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click="downloadStory" v-bind="attrs" v-on="on">
+                            <v-icon>mdi-download</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>下載故事</span>
+                </v-tooltip>
+            </v-app-bar>
+            <v-main>
+                <v-tabs dark show-arrows v-model="openedPageIndex">
+                    <v-tabs-slider color="#FFFFFF"></v-tabs-slider>
+                    <v-tab v-for="item in openedPages" :key="item">
+                        <span>{{item}}</span>
+                        <v-btn icon color="deep-orange" @click="openedPageClose(item)">
+                            <v-icon color="red darken-2">mdi-close</v-icon>
+                        </v-btn>
+                    </v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="openedPageIndex" dark>
+                    <v-tab-item v-for="item in openedPages" :key="item">
+                      <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item)"></iframe>
+                    </v-tab-item>
+                </v-tabs-items>
+                <v-dialog v-model="storyFileDialog" max-width="500px" persistent>
+                    <v-card>
+                        <v-card-title>
+                            {{storyFileDialogData.title}}
+                        </v-card-title>
+                        <v-card-text>
+                            <v-text-field v-if="storyFileDialogData.title != storyFileDialogData.TYPE.DELETE.title" label="檔案名稱" :rules="[(value) => storyFileDialogData.errorMessage || true]" v-model="storyFileNameForDialog"></v-text-field>
+                            <v-card-text v-else>{{storyFileDialogData.message(storyFileDialogData.name)}}</v-card-text>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" text :disabled="storyFileDialogData.title != storyFileDialogData.TYPE.DELETE.title && storyFileDialogData.errorMessage != ''" @click="storyFileDialogOption()">
+                                完成
+                            </v-btn>
+                            <v-btn color="#e91e63" text @click="storyFileDialog = false">
+                                取消
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="storyDialog" max-width="500px" persistent>
+                    <v-card>
+                        <v-card-title>
+                            {{DEFAULT_FILE_NAMES.STORY}}
+                        </v-card-title>
+                        <v-card-text>
+                            <v-text-field label="故事名稱" v-model="story.name"></v-text-field>
+                            <v-select :items="storyFile" v-model="story.startFrom" label="故事從哪裡開始"></v-select>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" text  @click="storyDialog = !storyDialog">
+                                完成
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="pleaseWaitDialog" max-width="500px" persistent>
+                    <v-card>
+                        <v-card-title>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                            <span>請稍後</span>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+            </v-main>
+          
+            <!-- <v-footer app>
+            </v-footer> -->
+        </v-app>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯器</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="./js/esprima.js"></script> -->
+    <script src="./dist/editor.bundle.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        html, body, #app, #main, .v-application--wrap, .v-application{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            background-color: #272727;
+            color: #FFFFFF;
+        }
+        .v-expansion-panel-content__wrap{
+            padding: 0px;
+        }
+        #main{
+            display: flex;
+            flex-direction: row;
+        }
+        .block{
+            user-select: none;
+            border: 1px;
+            border-color: #272727;
+            border-style: double;
+        }
+        .operator{
+            display: flex; 
+            min-height: 40px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" @mouseup="mouseUp" @mousemove="mouseMove" @mousedown="mouseDown">
+        <v-app>
+            <!-- <v-main> -->
+                <div id="main">
+                    <div @mouseup="mouseUp" @mouseout="mouseOut" style="width: 150px; overflow-y: auto;">
+                        <v-expansion-panels dark focusable>
+                            <template v-if="fileName == DEFAULT_FILE_NAMES.CHARACTER">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>人物介紹</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <character :is-demo="true" @mousedown="mouseDown"></character>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </template>
+                            <template v-else-if="fileName == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>字串</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <string-variable :is-demo="true" @mousedown="mouseDown"></string-variable>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>數字</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <number-variable :is-demo="true" @mousedown="mouseDown"></number-variable>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </template>
+                            <template v-else>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>條件</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <if :is-demo="true" @mousedown="mouseDown"></if>
+                                        <elseif :is-demo="true" @mousedown="mouseDown"></elseif>
+                                        <else :is-demo="true" @mousedown="mouseDown"></else>
+                                        <sc-select :is-demo="true" @mousedown="mouseDown"></sc-select>
+                                        <sc-option :is-demo="true" @mousedown="mouseDown"></sc-option>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>迴圈</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <while :is-demo="true" @mousedown="mouseDown"></while>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>指令</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <show :is-demo="true" @mousedown="mouseDown"></show>
+                                        <exec :is-demo="true" @mousedown="mouseDown"></exec>
+                                        <sleep :is-demo="true" @mousedown="mouseDown"></sleep>
+                                        <go-to :is-demo="true" @mousedown="mouseDown"></go-to>
+                                        <continue :is-demo="true" @mousedown="mouseDown"></continue>
+                                        <break :is-demo="true" @mousedown="mouseDown"></break>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>運算子</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+'}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-'}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '*'}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '/'}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '=='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '!='}" @mousedown="mouseDown"></operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '-'}" @mousedown="mouseDown"></unary-operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '!'}" @mousedown="mouseDown"></unary-operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.AssignmentExpression, operator: '='}" @mousedown="mouseDown"></operator>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>字串</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <string :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: ''}" @mousedown="mouseDown"></string>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>數字</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <number :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: 0}" @mousedown="mouseDown"></number>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>布林直</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'true', value: true}" @mousedown="mouseDown"></bool>
+                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'false', value: false}" @mousedown="mouseDown"></bool>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>變數</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <div v-for="item in globalVariables">
+                                            <variable :is-demo="true" :b-code="{type: esprima.Syntax.MemberExpression, object:{type: esprima.Syntax.Identifier, name: 'SC'}, property: {type: esprima.Syntax.Identifier, name: item.name}}" @mousedown="mouseDown"></variable>
+                                        </div>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </template>
+                        </v-expansion-panels>
+                    </div>
+                    <blocks :b-code.sync="codeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
+                    <div style="width: 150px; display: flex; flex-direction: column;">
+                        <div style="display: flex;">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon @click="save" v-bind="attrs" v-on="on">
+                                        <v-icon color="#FFFFFF">mdi-content-save</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>儲存</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon @click="save" v-bind="attrs" v-on="on" style="display: none;">
+                                        <v-icon color="#FFFFFF">mdi-bug</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>除錯</span>
+                            </v-tooltip>
+                        </div>
+                        <span>暫存區</span>
+                        <blocks :allow-type="[TYPE.CODE_BLOCK, TYPE.VAR_BLOCK, TYPE.LIFT_VAR_BLOCK, TYPE.SELECT_OPTION]" :b-code.sync="tempCodeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
+                        <trash @mouseup="trashMouseUp" ></trash>
+                    </div>
+                    <v-snackbar v-model="snackbar">
+                        <span>儲存完畢</span>
+                        <template v-slot:action="{ attrs }">
+                            <v-btn color="#e91e63" text v-bind="attrs" @click="snackbar = false" >
+                                <span>好</span>
+                            </v-btn>
+                        </template>
+                    </v-snackbar>
+                </div>
+            <!-- </v-main> -->
+        </v-app>
+    </div>
+</body>
+</html>

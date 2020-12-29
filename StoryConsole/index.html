@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>StoryConsole</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="./js/jszip-utils.min.js"></script>
+    <script src="./js/jszip.min.js"></script>
+
+    <style>
+        body{
+            margin: 0px;
+        }
+        #app{
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        #consoleScreen{
+            display: flex;
+            flex-direction: column;
+            background-color: black;
+            color: white;
+            flex: 1;
+            font-size: 1.3em;
+            overflow-y: scroll;
+        }
+        #buttons{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .btn{
+            flex: 1;
+            height: 50px;
+            min-width: 50px;
+            margin: 0px 2px 0px 2px;
+        }
+        .keep-spaces { 
+            white-space: pre-wrap; 
+        }
+    </style>
+</head>
+<body>
+    <div id = 'app'>
+        <div id = 'consoleScreen' class = 'keep-spaces' tabindex = '0' @keyup = 'keyboardInput'>
+            <div v-for = 'text in screenTexts'>
+                <span v-if = 'text'>{{text}}</span>
+                <br v-else/>
+            </div>
+            <span>&rsaquo;{{input}}</span>
+        </div>
+        <div id = 'buttons'>
+            <button class = 'btn' @click="buttonClick" v-for = 'b in buttons'>{{b}}</button>
+        </div>
+        <input id="uploadSdtory" type="file" accept=".zip" hidden/>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
