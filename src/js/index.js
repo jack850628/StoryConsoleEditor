@@ -117,6 +117,11 @@ window.onload = function(){
                 get(){
                     return [...this.defaultFile, ...this.storyFile];
                 }
+            },
+            storyFileName: {
+                get(){
+                    return this.storyFile.map(file => file.name);
+                }
             }
         },
         watch: {
