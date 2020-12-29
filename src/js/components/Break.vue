@@ -1,6 +1,6 @@
 <template>
     <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, minHeight, minWidth, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
-        <span>break</span>
+        <span>跳出迴圈</span>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
                 <v-list-item v-for="(item, index) in contextMenuItems" :key="index" @click="contextMenuItemClick($event, _self, item, index)">
