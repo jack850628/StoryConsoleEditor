@@ -1,9 +1,15 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
-        <div style="display: flex; min-height: 40px;">
-            <span>暫停:</span>
-            <calculate :b-code.sync="codeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
-            <span>秒</span>
+    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
+        <div style="display: flex; margin: 10px">
+            <span>名稱: </span>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop=""/>
+        </div>
+        <div style="display: flex; margin: 10px">
+            <span>值: </span>
+            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="">
+                <option value="true">真</option>
+                <option value="false">假</option>
+            </select>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -16,16 +22,20 @@
 </template>
 
 <script>
-    import {BlockBase, createMathString, SC_NULL} from '@/js/JTools.js';
+    import {BlockBase, createMathString} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
-
+    
     var esprima = require('esprima');
 
     export default {
         props: {
-            calculable: {
+            name: {
                 type: String,
-                default: "",
+                default: '',
+            },
+            value: {
+                type: Number,
+                default: 0,
             },
             contextMenuItemClick: {
                 type: Function,
@@ -37,39 +47,13 @@
             },
             ...new BlockBase(),
         },
-        watch: {
-            calculable(val){
-                try{
-                    this.codeTree = esprima.parseScript(val).body[0]?.expression;//在VueComponent重畫時，若重畫前與後的VueComponent是一樣的話，data是會繼續沿用而不會重建
-                }catch(e){
-                    console.error('運算式解析錯誤',e);
-                }
-            },
-            codeTree: {
-                handler(val){
-                    this.calculableStr = createMathString(val);
-                },
-                deep: true
-            }
-        },
-        computed:{
-            calculableStr: {
-                get(){
-                    return this.calculable;
-                },
-                set(val){
-                    this.$emit('update:calculable', val);
-                }
-            }
-        },
         data(){
             return ({
                 type: TYPE.CODE_BLOCK,
-                codeTree: esprima.parseScript(this.calculable).body[0]?.expression,
                 mTop: this.top,
                 mLeft: this.left,
                 width: 'auto',
-                minHeight: 40,
+                height: 'auto',
                 position: "static",
                 entering: false,
                 showMenu: false,
@@ -77,10 +61,30 @@
                 menuY: 0,
                 data(){
                     return ({
-                        sleep: SC_NULL.name
+                        name: '',
+                        type: 'boolean',
+                        value: true,
                     });
                 }
             })
+        },
+        computed:{
+            _name: {
+                get(){
+                    return this.name
+                },
+                set(val){
+                    this.$emit('update:name', val);
+                }
+            },
+            _value: {
+                get(){
+                    return this.value
+                },
+                set(val){
+                    this.$emit('update:value', val);
+                }
+            }
         },
         methods: {
             mouseUp: function(event, c){this.$emit('mouseup', event, c ?? this)},
@@ -101,6 +105,12 @@
                     this.showMenu = true
                 })
             },
-        }
-    };
+        },
+    }
 </script>
+
+<style scoped>
+    input, select{
+        background-color: white;
+    }
+</style>

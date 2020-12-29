@@ -31,6 +31,10 @@
             display: flex;
             flex: 1;
         }
+        .v-navigation-drawer__content .v-badge__badge{
+            top: 30% !important;
+            left: -10px !important;
+        }
     </style>
     <script>
         window.onbeforeunload=function(e){  
@@ -61,15 +65,19 @@
                           <v-list-item-title v-text="'故事'"></v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
-                      <v-list-item v-for="(item, index) in defaultFile" :key="index" @click="filesListClick(item.name)">
-                        <v-list-item-content>
-                          <v-list-item-title v-text="item.alias"></v-list-item-title>
-                        </v-list-item-content>
+                      <v-list-item v-for="(item, index) in defaultFile" :key="index" @click="filesListClick(item.name, item.alias, item.modified)">
+                        <v-badge color="#FFFFFF" :value="item.modified" left dot>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="item.alias"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-badge>
                       </v-list-item>
-                      <v-list-item v-for="(item, index) in storyFile" :key="index" @click="filesListClick(item)" @contextmenu="openFileMenu($event, index)">
-                        <v-list-item-content>
-                          <v-list-item-title v-text="item"></v-list-item-title>
-                        </v-list-item-content>
+                      <v-list-item v-for="(item, index) in storyFile" :key="index" @click="filesListClick(item.name, item.name, item.modified)" @contextmenu="openFileMenu($event, index)">
+                        <v-badge color="#FFFFFF" :value="item.modified" left dot>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="item.name"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-badge>
                       </v-list-item>
                     </v-list-item-group>
                   </v-list>
@@ -115,16 +123,18 @@
             <v-main>
                 <v-tabs dark show-arrows v-model="openedPageIndex">
                     <v-tabs-slider color="#FFFFFF"></v-tabs-slider>
-                    <v-tab v-for="item in openedPages" :key="item">
-                        <span>{{item}}</span>
-                        <v-btn icon color="deep-orange" @click="openedPageClose(item)">
+                    <v-tab v-for="(item, index) in openedPages" :key="index">
+                        <v-badge color="#FFFFFF" :value="item.modified" left dot>
+                            <span>{{item.alias}}</span>
+                        </v-badge>
+                        <v-btn icon color="deep-orange" @click="openedPageClose(item.name)">
                             <v-icon color="red darken-2">mdi-close</v-icon>
                         </v-btn>
                     </v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="openedPageIndex" dark>
-                    <v-tab-item v-for="item in openedPages" :key="item">
-                      <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item)"></iframe>
+                    <v-tab-item v-for="(item, index) in openedPages" :key="index">
+                      <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item.name)"></iframe>
                     </v-tab-item>
                 </v-tabs-items>
                 <v-dialog v-model="storyFileDialog" max-width="500px" persistent>

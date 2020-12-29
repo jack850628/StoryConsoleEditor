@@ -27,8 +27,17 @@ export const createMathString = function(obj){
         case esprima.Syntax.Literal:{
             return JSON.stringify(obj.value);//不知道什麼原因導致 Literal 的 raw 屬性有機會不見，所以 obj.raw 有機會是 undefined
         }
+        case esprima.Syntax.Identifier:{
+            return obj.name;
+        }
     }
+    return str;
 };
+
+export const SC_NULL = {
+    name: 'SC_NULL',
+    type: 'Identifier',
+}
 
 export class BlockBase{
     constructor(arg = {}){

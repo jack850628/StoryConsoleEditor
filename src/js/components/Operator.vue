@@ -1,11 +1,11 @@
 <template>
     <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
         <div class="operator">
-            <template v-if="code.operator != '='">
-                <calculate :b-code.sync="code.left" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
+            <template v-if="code.operator.includes('=', '+=', '-=')">
+                <calculate :b-code.sync="code.left" :allowType="[TYPE.LIFT_VAR_BLOCK]" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
             </template>
             <template v-else>
-                <calculate :b-code.sync="code.left" :allowType="[TYPE.LIFT_VAR_BLOCK]" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
+                <calculate :b-code.sync="code.left" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
             </template>
             <span style="padding: 5px;">{{code.operator}}</span>
             <calculate :b-code.sync="code.right" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
@@ -53,9 +53,7 @@
                 menuX: 0,
                 menuY: 0,
                 data: ()=>{
-                    let o = {};
-                    Object.assign(o, this.bCode);
-                    return o;
+                    return {...this.bCode};
                 }
             })
         },

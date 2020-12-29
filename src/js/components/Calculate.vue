@@ -11,6 +11,7 @@
 
 <script>
     import {TYPE} from '@/js/Config.js';
+    import {SC_NULL} from '@/js/JTools.js';
 
     var esprima = require('esprima');
 
@@ -18,7 +19,7 @@
         props: {
             bCode: {
                 type: Object,
-                default: ()=>({}),
+                default: () => SC_NULL,
             },
             mouseup:{
                 type: Function,

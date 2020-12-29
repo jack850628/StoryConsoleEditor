@@ -3,7 +3,7 @@
         <span>前往: </span>
         <select v-model="_fileName" @mousedown.stop="">
             <option value="">主選單</option>
-            <option v-for="(name, index) in $root.storyFile" :key="index" :value="name">{{name}}</option>
+            <option v-for="(file, index) in $root.storyFile" :key="index" :value="file.name">{{file.name}}</option>
         </select>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>

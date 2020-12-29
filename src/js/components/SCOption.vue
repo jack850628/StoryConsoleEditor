@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import {BlockBase, createMathString} from '@/js/JTools.js';
+    import {BlockBase, createMathString, SC_NULL} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
     
     var esprima = require('esprima');
@@ -46,7 +46,11 @@
         },
         watch: {
             calculable(val){
-                this.codeTree = esprima.parseScript(val).body[0]?.expression;//在VueComponent重畫時，若重畫前與後的VueComponent是一樣的話，data是會繼續沿用而不會重建
+                try{
+                    this.codeTree = esprima.parseScript(val).body[0]?.expression;//在VueComponent重畫時，若重畫前與後的VueComponent是一樣的話，data是會繼續沿用而不會重建
+                }catch(e){
+                    console.error('運算式解析錯誤',e);
+                }
             },
             codeTree: {
                 handler(val){
@@ -70,7 +74,7 @@
                 menuY: 0,
                 data(){
                     return ({
-                        text: '',
+                        text: SC_NULL.name,
                         then: [
                             
                         ]

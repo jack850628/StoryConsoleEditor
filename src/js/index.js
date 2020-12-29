@@ -28,11 +28,27 @@ export var story = [
 
 window.onload = function(){
     var i = 0;
-    new Vue({
+
+    var fileStatusChanged = function({detail}){
+        let [page] = app.$data.openedPages.filter((item) => item.name == detail.fileName);
+        let [file] = app.files.filter((item) => item.name == detail.fileName);
+        switch(detail.type){
+            case EVENT.FILE_STATUS.TYPE.MODIFIED: {
+                file.modified = page.modified = true;
+                break;
+            }
+            case EVENT.FILE_STATUS.TYPE.SAVED: {
+                file.modified = page.modified = false;
+                break;
+            }
+        }
+    }
+
+    var app = new Vue({
         el: '#app',
         vuetify,
         data: {
-            VERSION: '1.0.1229',
+            VERSION: '1.0.1230',
             DEFAULT_FILE_NAMES,
             drawer: null,
             storyFile: [
@@ -41,10 +57,12 @@ window.onload = function(){
                 {
                     name: DEFAULT_FILE_NAMES.CHARACTER,
                     alias: '人物介紹',
+                    modified: false,
                 },
                 {
                     name: DEFAULT_FILE_NAMES.GLOBAL_VARIABLE,
                     alias: '全域變數',
+                    modified: false,
                 }
             ],
             openedPages: [
@@ -94,6 +112,11 @@ window.onload = function(){
                 set(val){
                     this.storyFileDialogData.name = val;
                 }
+            },
+            files: {
+                get(){
+                    return [...this.defaultFile, ...this.storyFile];
+                }
             }
         },
         watch: {
@@ -118,7 +141,7 @@ window.onload = function(){
                     }
                     case this.storyFileDialogData.TYPE.EDIT_NAME:
                     case this.storyFileDialogData.TYPE.DELETE:{
-                        this.storyFileDialogData.name = this.storyFile[this.showFileMenuRightClickItemIndex];
+                        this.storyFileDialogData.name = this.storyFile[this.showFileMenuRightClickItemIndex].name;
                         break;
                     }
                 }
@@ -133,7 +156,10 @@ window.onload = function(){
                             complete: JSON.stringify([]),
                             edit: [],
                         });
-                        this.storyFile.push(this.storyFileDialogData.name);
+                        this.storyFile.push({
+                            name: this.storyFileDialogData.name,
+                            modified: false,
+                        });
                         eventBus.$emit(EVENT.UPDATE_STORY_FILE.NAME, {
                             type: EVENT.UPDATE_STORY_FILE.TYPE.ADD,
                             fileName: this.storyFileDialogData.name,
@@ -141,13 +167,13 @@ window.onload = function(){
                         break;
                     }
                     case this.storyFileDialogData.TYPE.EDIT_NAME.title:{
-                        let oldName = this.storyFile[this.showFileMenuRightClickItemIndex];
-                        let index = this.openedPages.indexOf(oldName);
-                        if(index != -1){
-                            Vue.set(this.openedPages, index, this.storyFileDialogData.name);
+                        let oldName = this.storyFile[this.showFileMenuRightClickItemIndex].name;
+                        let [page] = this.openedPages.filter((item) => item.name == oldName);
+                        if(page){
+                            page.name = page.alias = this.storyFileDialogData.name
                         }
                         story.filter(i => i.name == oldName)[0].name = this.storyFileDialogData.name;
-                        Vue.set(this.storyFile, this.showFileMenuRightClickItemIndex, this.storyFileDialogData.name);
+                        this.storyFile[this.showFileMenuRightClickItemIndex].name =  this.storyFileDialogData.name;
                         if(this.story.startFrom == oldName){
                             this.story.startFrom = this.storyFileDialogData.name;
                         }
@@ -160,8 +186,8 @@ window.onload = function(){
                         break;
                     }
                     case this.storyFileDialogData.TYPE.DELETE.title:{
-                        let name = this.storyFile[this.showFileMenuRightClickItemIndex];
-                        let index = this.openedPages.indexOf(name);
+                        let name = this.storyFile[this.showFileMenuRightClickItemIndex].name;
+                        let index = this.openedPages.findIndex((item) => item.name == name);
                         if(index != -1){
                             this.openedPages.splice(index, 1);
                         }
@@ -176,16 +202,20 @@ window.onload = function(){
                     }
                 }
             },
-            filesListClick(item){
-                var index = this.openedPages.indexOf(item);
+            filesListClick(name, alias, modified){
+                var index = this.openedPages.findIndex((item) => item.name == name);
                 if(index == -1){
-                    index = this.openedPages.push(item) - 1;
+                    index = this.openedPages.push({
+                        name,
+                        alias,
+                        modified: modified,
+                    }) - 1;
                 }
                 this.openedPageIndex = index;
                 this.drawerClose();
             },
-            openedPageClose(item){
-                var index = this.openedPages.indexOf(item);
+            openedPageClose(name){
+                var index = this.openedPages.findIndex((item) => item.name == name);
                 if(this.openedPageIndex > index){
                     this.openedPageIndex--;
                 }
@@ -253,7 +283,7 @@ window.onload = function(){
                 story.push({
                     name: item.name,
                     complete: JSON.stringify([]),
-                    edit: []
+                    edit: [],
                 });
             }
             // for(let name of this.storyFile){
@@ -292,6 +322,9 @@ window.onload = function(){
                     for(let key in DEFAULT_FILE_NAMES){
                         defaultFileNames.push(DEFAULT_FILE_NAMES[key]);
                     }
+                    for(let file of this.defaultFile){
+                        file.modified = false;
+                    }
                     for(let file in zipFile.files){
                         console.debug(file);
                         let name = file.match(/(.+)?\.json$/)[1];
@@ -302,7 +335,10 @@ window.onload = function(){
                             edit: JSON.parse(data),
                         });
                         if(!(defaultFileNames.includes(name))){
-                            this.storyFile.push(name);
+                            this.storyFile.push({
+                                name,
+                                modified: false,
+                            });
                         }else if(name == DEFAULT_FILE_NAMES.STORY){
                             this.story = JSON.parse(data);
                         }
@@ -313,4 +349,6 @@ window.onload = function(){
             }.bind(this);
         }
     });
+
+    eventBus.$on(EVENT.FILE_STATUS.NAME, fileStatusChanged);
 }

@@ -32,5 +32,12 @@ class OldDriver {
       TYPE: {
         
       }
+    },
+    FILE_STATUS: {
+      NAME: 'UPDATE_STORY_FILE',
+      TYPE: {
+        MODIFIED: 'modified',
+        SAVED: 'saved',
+      }
     }
   };

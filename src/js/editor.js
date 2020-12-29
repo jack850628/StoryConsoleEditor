@@ -2,6 +2,7 @@ import Vue from 'vue';
 // import {default as Vuex, mapState} from 'vuex'
 import vuetify from '@/plugins/vuetify';
 import {TYPE, DRAG_BLOCK_OFFSET_X, DRAG_BLOCK_OFFSET_Y, Y_SCROLL_TRIGGER_HEIGHT, DEFAULT_FILE_NAMES} from './Config.js';
+import {SC_NULL} from './JTools.js';
 import {EVENT} from './EventBus.js';
 
 import Blocks from '@/js/components/Blocks.vue';
@@ -24,6 +25,7 @@ import Sleep from '@/js/components/Sleep.vue';
 import Character from '@/js/components/Character.vue';
 import StringVariable from '@/js/components/StringVariable.vue';
 import NumberVariable from '@/js/components/NumberVariable.vue';
+import BooleanVariable from '@/js/components/BooleanVariable.vue';
 import Variable from '@/js/components/Variable.vue';
 import GoTo from '@/js/components/GoTo.vue';
 import Continue from '@/js/components/Continue.vue';
@@ -51,6 +53,7 @@ Vue.component('bool', Bool);
 Vue.component('character', Character);
 Vue.component('string-variable', StringVariable);
 Vue.component('number-variable', NumberVariable);
+Vue.component('boolean-variable', BooleanVariable);
 Vue.component('variable', Variable);
 Vue.component('go-to', GoTo);
 Vue.component('continue', Continue);
@@ -86,6 +89,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
         data: {
             TYPE,
             DEFAULT_FILE_NAMES,
+            SC_NULL,
             fileName,
             esprima,
             eventBus,
@@ -142,6 +146,17 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
         // computed: mapState([
         //     'globalVariable'
         // ]),
+        watch: {
+            codeTree: {
+                handler(val){
+                    eventBus.$emit(EVENT.FILE_STATUS.NAME, {
+                        type: EVENT.FILE_STATUS.TYPE.MODIFIED,
+                        fileName: this.fileName,
+                    });
+                },
+                deep: true
+            }
+        },
         methods: {
             mouseDown(e, dragingNode){
                 if(e.button == 2) return;
@@ -192,17 +207,16 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                                     blockArea.code.push(block);
                                 }
                                 if(!(this.dragingNode.$parent.code instanceof Array)){
-                                    this.dragingNode.$parent.code = null;
+                                    this.dragingNode.$parent.code = SC_NULL;
                                 }
-                            }else if(blockArea.code){
-                                if(this.dragingNode.$parent.code instanceof Array){
-                                    this.dragingNode.$parent.code.push(blockArea.code);
-                                }else if(this.dragingNode.$parent.code){
-                                    this.dragingNode.$parent.code = blockArea.code;
-                                }else{
+                            }else{
+                                if(blockArea.code.type != SC_NULL.type && blockArea.code.name != SC_NULL.name){
                                     this.tempCodeTree.push(blockArea.code);
                                 }
                                 blockArea.code = block;
+                                if(!(this.dragingNode.$parent.code instanceof Array)){
+                                    this.dragingNode.$parent.code = SC_NULL;
+                                }
                             }
                         }
                     }
@@ -287,7 +301,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                         if(this.dragingNode.$parent.code instanceof Array)
                             this.dragingNode.$parent.code.splice(this.dragingNode.$props.index, 1);
                         else
-                            this.dragingNode.$parent.code = {};
+                            this.dragingNode.$parent.code = SC_NULL;
                     }
                 }
                 this.dragingNode = null;
@@ -339,6 +353,10 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                 if(fileName == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE){
                     eventBus.$emit(EVENT.UPDATE_VARIABLE.NAME, JSON.parse(codeTree.complete));
                 }
+                eventBus.$emit(EVENT.FILE_STATUS.NAME, {
+                    type: EVENT.FILE_STATUS.TYPE.SAVED,
+                    fileName: this.fileName,
+                });
                 this.snackbar = true;
                 setTimeout(()=>{
                     this.snackbar = false;
@@ -347,6 +365,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
 
             debug(){
                 console.log(this.codeTree);
+                console.log(this.tempCodeTree);
             }
         },
     });

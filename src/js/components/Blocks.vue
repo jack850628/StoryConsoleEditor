@@ -20,6 +20,7 @@
             <!-- 全域變數 -->
             <string-variable v-else-if="'type' in item && item.type == 'string'" :index="index" :name.sync="item.name" :value.sync="item.value" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></string-variable>
             <number-variable v-else-if="'type' in item && item.type == 'number'" :index="index" :name.sync="item.name" :value.sync="item.value" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></number-variable>
+            <boolean-variable v-else-if="'type' in item && item.type == 'boolean'" :index="index" :name.sync="item.name" :value.sync="item.value" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></boolean-variable>
             <!-- 全域變數 -->
 
             <operator v-else-if="item.type == esprima.Syntax.BinaryExpression || item.type == esprima.Syntax.AssignmentExpression" :b-code="item" :index="index" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></operator>

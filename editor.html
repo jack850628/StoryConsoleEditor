@@ -65,6 +65,12 @@
                                         <number-variable :is-demo="true" @mousedown="mouseDown"></number-variable>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>布林</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <boolean-variable :is-demo="true" @mousedown="mouseDown"></boolean-variable>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
                             </template>
                             <template v-else>
                                 <v-expansion-panel>
@@ -97,19 +103,21 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>運算子</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+'}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-'}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '*'}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '/'}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+='}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-='}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>='}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<='}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '=='}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '!='}" @mousedown="mouseDown"></operator>
-                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '-'}" @mousedown="mouseDown"></unary-operator>
-                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '!'}" @mousedown="mouseDown"></unary-operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.AssignmentExpression, operator: '='}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '*', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '/', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '==', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '!=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '-', argument: SC_NULL}" @mousedown="mouseDown"></unary-operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '!', argument: SC_NULL}" @mousedown="mouseDown"></unary-operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.AssignmentExpression, operator: '=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
@@ -155,7 +163,7 @@
                             </v-tooltip>
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon @click="save" v-bind="attrs" v-on="on" style="display: none;">
+                                    <v-btn icon @click="debug" v-bind="attrs" v-on="on" style="display: block;">
                                         <v-icon color="#FFFFFF">mdi-bug</v-icon>
                                     </v-btn>
                                 </template>
