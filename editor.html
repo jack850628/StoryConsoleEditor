@@ -38,11 +38,11 @@
     </style>
 </head>
 <body>
-    <div id="app" @mouseup="mouseUp" @mousemove="mouseMove" @mousedown="mouseDown">
+    <div id="app" @mouseup="mouseUp" @mousemove="mouseMove" @mousedown="mouseDown" @touchend="mouseUp" @touchmove="mouseMove" @touchstart="mouseDown">
         <v-app>
             <!-- <v-main> -->
                 <div id="main">
-                    <div @mouseup="mouseUp" @mouseout="mouseOut" style="width: 150px; overflow-y: auto;">
+                    <div style="width: 150px; overflow-y: auto;">
                         <v-expansion-panels dark focusable>
                             <template v-if="fileName == DEFAULT_FILE_NAMES.CHARACTER">
                                 <v-expansion-panel>
@@ -171,8 +171,8 @@
                             </v-tooltip>
                         </div>
                         <span>暫存區</span>
-                        <blocks :allow-type="[TYPE.CODE_BLOCK, TYPE.VAR_BLOCK, TYPE.LIFT_VAR_BLOCK, TYPE.SELECT_OPTION]" :b-code.sync="tempCodeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
-                        <trash @mouseup="trashMouseUp" ></trash>
+                        <blocks :allow-type="[TYPE.CODE_BLOCK, TYPE.VAR_BLOCK, TYPE.LIFT_VAR_BLOCK, TYPE.SELECT_OPTION]" :b-code.sync="tempCodeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @touchmove="mouseMove" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
+                        <trash @mouseup="trashMouseUp" @touchend="mouseUp"></trash>
                     </div>
                     <v-snackbar v-model="snackbar">
                         <span>儲存完畢</span>

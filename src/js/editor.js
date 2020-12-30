@@ -159,7 +159,11 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
         },
         methods: {
             mouseDown(e, dragingNode){
-                if(e.button == 2) return;
+                if(e.type == 'touchstart'){
+                    e = e.touches[0];
+                }else{
+                    if(e.button == 2) return;
+                }
                 this.mouseDowned = true;
                 if(dragingNode){
                     this.dragingNode = dragingNode;
@@ -169,6 +173,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                 }
             },
             mouseMove(event){
+                if(event.type == 'touchmove') event = event.touches[0];
                 if(this.dragingNode && this.mouseDowned){
                     this.dragingNode.move(event.pageX + DRAG_BLOCK_OFFSET_X, event.pageY + DRAG_BLOCK_OFFSET_Y);
                 }
@@ -320,8 +325,9 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
             scrollTriggerY(event, c){
                 var top = c.$el.offsetTop;
                 var bottom = c.$el.offsetTop + c.$el.offsetHeight;
+                var pageY = (event.type == 'touchmove') ? event.touches[0].pageY : event.pageY;
                 if(this.dragingNode && this.mouseDowned){
-                    if(event.pageY < top + Y_SCROLL_TRIGGER_HEIGHT){
+                    if(pageY < top + Y_SCROLL_TRIGGER_HEIGHT){
                         if(!interval){
                             interval = setInterval(function(){
                                 c.$el.scrollTop -= 10;
@@ -329,7 +335,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                             }, 30);
                         }
                         return;
-                    }else if(event.pageY > bottom - Y_SCROLL_TRIGGER_HEIGHT){
+                    }else if(pageY > bottom - Y_SCROLL_TRIGGER_HEIGHT){
                         if(!interval){
                             interval = setInterval(function(){
                                 c.$el.scrollTop += 10;

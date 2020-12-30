@@ -5,7 +5,7 @@
             <calculate :b-code.sync="codeTree"  :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :contextmenu="contextMenu" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
         </div>
         <div style="display: flex; min-height: 40px;">
-            <span>就: </span>
+            <span>就做: </span>
             <blocks :b-code.sync="code" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :contextmenu="contextMenu" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="background-color: #5e9aff;"></blocks>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>

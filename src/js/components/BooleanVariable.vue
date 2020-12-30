@@ -1,12 +1,12 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
+    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @touchend.stop="mouseUp" @touchmove.stop="mouseMove" @touchstart.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <div style="display: flex; margin: 10px">
             <span>名稱: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop=""/>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""/>
         </div>
         <div style="display: flex; margin: 10px">
             <span>值: </span>
-            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="">
+            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop="">
                 <option value="true">真</option>
                 <option value="false">假</option>
             </select>

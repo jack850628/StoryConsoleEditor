@@ -1,5 +1,5 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" :style="{position, bottom, right, width, height, backgroundColor}">
+    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @touchend.stop="mouseUp" :style="{position, bottom, right, width, height, backgroundColor}">
         <v-icon dark x-large>{{icon}}</v-icon>
     </div>
 </template>

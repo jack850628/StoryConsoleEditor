@@ -1,5 +1,5 @@
 <template>
-    <div @mouseover.stop="mouseover($event, _self)" @mouseout.stop="mouseout($event, _self)" @mousemove.capture="mouseMove($event)" @mouseleave="mouseLeave" :style="{flex: 2, minHeight}">
+    <div @mouseover.stop="mouseover($event, _self)" @mouseout.stop="mouseout($event, _self)" @mousemove.capture="mouseMove($event)" @mouseleave="mouseLeave" @touchmove="mouseMove($event)" :style="{flex: 2, minHeight}">
         <template v-for="(item, index) in code"><!-- 因為template不能設定:key所以將template換成table -->
             <show v-if="'show' in item" :index="index" :calculable.sync="item.show" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></show>
             <exec v-else-if="'exec' in item" :index="index" :calculable.sync="item.exec" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></exec>
@@ -28,7 +28,7 @@
             <bool v-else-if="item.type == esprima.Syntax.Literal && typeof(item.value) == 'boolean'" :b-code="item" :index="index" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></bool>
             <number v-else-if="item.type == esprima.Syntax.Literal && typeof(item.value) == 'number'" :b-code="item" :index="index" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></number>
             <string v-else-if="item.type == esprima.Syntax.Literal" :b-code="item" :index="index" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></string>
-            <variable v-else-if="item.type == esprima.Syntax.MemberExpression && item.object.name == 'SC'" :b-code="item" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></variable>
+            <variable v-else-if="item.type == esprima.Syntax.MemberExpression && item.object.name == 'SC'" :b-code="item" :index="index" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></variable>
         </template>
     </div>
 </template>
