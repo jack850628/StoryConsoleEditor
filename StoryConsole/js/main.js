@@ -365,8 +365,10 @@ const defaultStory = './story/放學回家啦！.zip';
                     let text = vApp.inputText();
                     selected = isNaN(text) || text == '' ? -1 : parseInt(text);
                 }
-                if (selected == 0)
-                {
+                if (selected == 0){
+                    vApp.clearScreen();
+                    setTimeout(()=>f2(resolve, reject));
+                }else if (selected == 1){
                     let option = [
                         {text: "返回"},
                         {text: "存檔"},
@@ -400,7 +402,7 @@ const defaultStory = './story/放學回家啦！.zip';
         }
         while(gameStatus == GameStatus.RUN){
             vApp.appebdTextToScreen(eval(text));
-            vApp.appebdTextToScreen("                         按0選項:");
+            vApp.appebdTextToScreen("                         按enter繼續、按0清空畫面、按1選項:");
             if(await f()) break;
         }
     }
