@@ -73,6 +73,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                 break;
             }
             case EVENT.UPDATE_STORY_FILE.TYPE.EDIT_NAME: {
+                fileName = app.$data.fileName = detail.fileName;
                 Vue.set(app.$data.storyFile, detail.index, detail.fileName);
                 break;
             }
