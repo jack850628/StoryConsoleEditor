@@ -102,7 +102,7 @@ window.onload = function(){
                 get(){
                     if(this.storyFileDialogData.name.match(/^$|\s+/)){
                         this.storyFileDialogData.errorMessage = '名稱不被允許';
-                    }else if(this.storyFile.includes(this.storyFileDialogData.name)){
+                    }else if(this.storyFile.find((item) => item.name == this.storyFileDialogData.name)){
                         this.storyFileDialogData.errorMessage = '名稱重複';
                     }else{
                         this.storyFileDialogData.errorMessage = '';
