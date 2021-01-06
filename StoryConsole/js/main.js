@@ -224,7 +224,7 @@ const defaultStory = './story/放學回家啦！.zip';
                 }
                 else if (command.sleep != undefined)
                 {
-                    await wait(parseInt(command.sleep) * 1000);
+                    await wait(parseInt(eval(command.sleep)) * 1000);
                 }
                 else if (command.select != undefined)
                 {
