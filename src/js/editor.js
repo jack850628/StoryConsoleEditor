@@ -192,7 +192,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                                         ||
                                         this.dragingNode.$props.index > c.$props.index//因為移動程式碼時，會先將程式碼移出在移入，所以在移出的過程中要移動的程式碼下方的所有程式碼都會發生props.index比實際在array中的index還要多1
                                     ){
-                                        blockArea.code.splice(c.$props.index + 1, 0, block);//若不index + 1的話，就會是搬移在目標程式碼的上面
+                                        blockArea.code.splice(c.$props.index, 0, block);//若index + 1的話，就會是搬移在目標程式碼的上面
                                     }else{
                                         blockArea.code.splice(c.$props.index, 0, block);//所以當程式碼是在同一個程式碼區塊搬移時，當要將程式碼從原本的位置往下移時就不用將index + 1
                                     }
