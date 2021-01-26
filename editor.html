@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <div id="app" @mouseup="mouseUp" @mousemove="mouseMove" @mousedown="mouseDown" @touchend="mouseUp" @touchmove="mouseMove" @touchstart="mouseDown">
+    <div id="app">
         <v-app>
             <!-- <v-main> -->
                 <div id="main">
@@ -48,7 +48,7 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>人物介紹</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <character :is-demo="true" @mousedown="mouseDown"></character>
+                                        <character :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></character>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </template>
@@ -56,19 +56,19 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>字串</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <string-variable :is-demo="true" @mousedown="mouseDown"></string-variable>
+                                        <string-variable :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></string-variable>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>數字</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <number-variable :is-demo="true" @mousedown="mouseDown"></number-variable>
+                                        <number-variable :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></number-variable>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>布林</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <boolean-variable :is-demo="true" @mousedown="mouseDown"></boolean-variable>
+                                        <boolean-variable :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></boolean-variable>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </template>
@@ -76,81 +76,81 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>條件</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <if :is-demo="true" @mousedown="mouseDown"></if>
-                                        <elseif :is-demo="true" @mousedown="mouseDown"></elseif>
-                                        <else :is-demo="true" @mousedown="mouseDown"></else>
-                                        <sc-select :is-demo="true" @mousedown="mouseDown"></sc-select>
-                                        <sc-option :is-demo="true" @mousedown="mouseDown"></sc-option>
+                                        <if :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></if>
+                                        <elseif :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></elseif>
+                                        <else :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></else>
+                                        <sc-select :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></sc-select>
+                                        <sc-option :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></sc-option>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>迴圈</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <while :is-demo="true" @mousedown="mouseDown"></while>
+                                        <while :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></while>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>指令</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <show :is-demo="true" @mousedown="mouseDown"></show>
-                                        <exec :is-demo="true" @mousedown="mouseDown"></exec>
-                                        <sleep :is-demo="true" @mousedown="mouseDown"></sleep>
-                                        <go-to :is-demo="true" @mousedown="mouseDown"></go-to>
-                                        <continue :is-demo="true" @mousedown="mouseDown"></continue>
-                                        <break :is-demo="true" @mousedown="mouseDown"></break>
+                                        <show :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></show>
+                                        <exec :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></exec>
+                                        <sleep :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></sleep>
+                                        <go-to :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></go-to>
+                                        <continue :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></continue>
+                                        <break :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></break>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>運算子</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '*', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '/', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '==', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '!=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
-                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '-', argument: SC_NULL}" @mousedown="mouseDown"></unary-operator>
-                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '!', argument: SC_NULL}" @mousedown="mouseDown"></unary-operator>
-                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.AssignmentExpression, operator: '=', left: SC_NULL, right: SC_NULL}" @mousedown="mouseDown"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '*', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '/', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '+=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '-=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '>=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '<=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '==', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.BinaryExpression, operator: '!=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '-', argument: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></unary-operator>
+                                        <unary-operator :is-demo="true" :b-code="{type: esprima.Syntax.UnaryExpression, operator: '!', argument: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></unary-operator>
+                                        <operator :is-demo="true" :b-code="{type: esprima.Syntax.AssignmentExpression, operator: '=', left: SC_NULL, right: SC_NULL}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></operator>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>字串</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <string :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: ''}" @mousedown="mouseDown"></string>
+                                        <string :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: ''}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></string>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>數字</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <number :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: 0}" @mousedown="mouseDown"></number>
+                                        <number :is-demo="true" :b-code="{type: esprima.Syntax.Literal, value: 0}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></number>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>布林值</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'true', value: true}" @mousedown="mouseDown"></bool>
-                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'false', value: false}" @mousedown="mouseDown"></bool>
+                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'true', value: true}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></bool>
+                                        <bool :is-demo="true" :b-code="{type: esprima.Syntax.Literal, raw: 'false', value: false}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></bool>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>變數</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <div v-for="item in globalVariables">
-                                            <variable :is-demo="true" :b-code="{type: esprima.Syntax.MemberExpression, object:{type: esprima.Syntax.Identifier, name: 'SC'}, property: {type: esprima.Syntax.Identifier, name: item.name}}" @mousedown="mouseDown"></variable>
+                                            <variable :is-demo="true" :b-code="{type: esprima.Syntax.MemberExpression, object:{type: esprima.Syntax.Identifier, name: 'SC'}, property: {type: esprima.Syntax.Identifier, name: item.name}}" @drag="drag" @dragstart="dragstart" @dragend="dragend"></variable>
                                         </div>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </template>
                         </v-expansion-panels>
                     </div>
-                    <blocks :b-code.sync="codeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
+                    <blocks :b-code.sync="codeTree" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="overflow-y: auto;"></blocks>
                     <div style="width: 150px; display: flex; flex-direction: column;">
                         <div style="display: flex;">
                             <v-tooltip bottom>
@@ -171,8 +171,8 @@
                             </v-tooltip>
                         </div>
                         <span>暫存區</span>
-                        <blocks :allow-type="[TYPE.CODE_BLOCK, TYPE.VAR_BLOCK, TYPE.LIFT_VAR_BLOCK, TYPE.SELECT_OPTION]" :b-code.sync="tempCodeTree" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" @mousemove="scrollTriggerY" @touchmove="mouseMove" @mouseleave="scrollTriggerYEnd" style="overflow-y: auto;"></blocks>
-                        <trash @mouseup="trashMouseUp" @touchend="mouseUp"></trash>
+                        <blocks :allow-type="[TYPE.CODE_BLOCK, TYPE.VAR_BLOCK, TYPE.LIFT_VAR_BLOCK, TYPE.SELECT_OPTION]" :b-code.sync="tempCodeTree" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="overflow-y: auto;"></blocks>
+                        <trash @drop="trashMouseUp"></trash>
                     </div>
                     <v-snackbar v-model="snackbar">
                         <span>儲存完畢</span>

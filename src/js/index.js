@@ -48,7 +48,7 @@ window.onload = function(){
         el: '#app',
         vuetify,
         data: {
-            VERSION: '1.0.1230',
+            VERSION: '1.1.0126',
             DEFAULT_FILE_NAMES,
             drawer: null,
             storyFile: [

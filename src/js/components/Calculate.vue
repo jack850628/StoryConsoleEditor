@@ -1,11 +1,11 @@
 <template>
-    <div @mouseover.stop="mouseover($event, _self)" @mouseout.stop="mouseout($event, _self)" :style="{display, alignItems, minWidth, minHeight, marginTop, marginBottom, backgroundColor, borderRadius: '50px'}">
-        <operator v-if="code && (code.type == esprima.Syntax.BinaryExpression || code.type == esprima.Syntax.AssignmentExpression)" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></operator>
-        <unary-operator v-else-if="code && code.type == esprima.Syntax.UnaryExpression" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></unary-operator>
-        <bool v-else-if="code && code.type == esprima.Syntax.Literal && typeof(code.value) == 'boolean'" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></bool>
-        <number v-else-if="code && code.type == esprima.Syntax.Literal && typeof(code.value) == 'number'" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></number>
-        <string v-else-if="code && code.type == esprima.Syntax.Literal" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></string>
-        <variable v-else-if="code && code.type == esprima.Syntax.MemberExpression && code.object.name == 'SC'" :b-code="code" @mouseout="mouseout" @mouseover="mouseover" @mouseup="mouseup" @mousemove="mousemove" @mousedown="mousedown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></variable>
+    <div @dragenter.stop="dragenter" @dragleave.stop="dragleave" @drop.stop="drop" @dragover.prevent :style="{display, alignItems, minWidth, minHeight, marginTop, marginBottom, backgroundColor, borderRadius: '50px'}">
+        <operator v-if="code && (code.type == esprima.Syntax.BinaryExpression || code.type == esprima.Syntax.AssignmentExpression)" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></operator>
+        <unary-operator v-else-if="code && code.type == esprima.Syntax.UnaryExpression" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></unary-operator>
+        <bool v-else-if="code && code.type == esprima.Syntax.Literal && typeof(code.value) == 'boolean'" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></bool>
+        <number v-else-if="code && code.type == esprima.Syntax.Literal && typeof(code.value) == 'number'" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></number>
+        <string v-else-if="code && code.type == esprima.Syntax.Literal" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></string>
+        <variable v-else-if="code && code.type == esprima.Syntax.MemberExpression && code.object.name == 'SC'" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></variable>
     </div>
 </template>
 
@@ -20,21 +20,6 @@
             bCode: {
                 type: Object,
                 default: () => SC_NULL,
-            },
-            mouseup:{
-                type: Function,
-            },
-            mousemove:{
-                type: Function,
-            },
-            mousedown:{
-                type: Function,
-            },
-            mouseover:{
-                type: Function,
-            },
-            mouseout:{
-                type: Function,
             },
             contextMenuItemClick: {
                 type: Function,
@@ -60,6 +45,24 @@
             }
         },
         methods: {
+            drag: function(event, c){
+                this.$emit('drag', event, c ?? this);
+            },
+            drop: function(event, c){
+                this.$emit('drop', event, c ?? this);
+            },
+            dragstart: function(event, c){
+                this.$emit('dragstart', event, c ?? this);
+            },
+            dragend: function(event, c){
+                this.$emit('dragend', event, c ?? this);
+            },
+            dragenter: function(event, c){
+                this.$emit('dragenter', event, c ?? this);
+            },
+            dragleave: function(event, c){
+                this.$emit('dragleave', event, c ?? this);
+            },
         },
         data(){
             return ({

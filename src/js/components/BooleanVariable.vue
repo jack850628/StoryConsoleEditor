@@ -1,12 +1,12 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @touchend.stop="mouseUp" @touchmove.stop="mouseMove" @touchstart.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
+    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <div style="display: flex; margin: 10px">
             <span>名稱: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""/>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @drag.stop="" @drop.stop="" @dragstart.stop="" @dragend.stop="" @dragenter.stop="" @dragleave.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""/>
         </div>
         <div style="display: flex; margin: 10px">
             <span>值: </span>
-            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @mouseout.stop="" @mouseover.stop="" @mouseup.stop="" @mousemove.stop="" @mousedown.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop="">
+            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @drag.stop="" @drop.stop="" @dragstart.stop="" @dragend.stop="" @dragenter.stop="" @dragleave.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop="">
                 <option value="true">真</option>
                 <option value="false">假</option>
             </select>
@@ -87,11 +87,24 @@
             }
         },
         methods: {
-            mouseUp: function(event, c){this.$emit('mouseup', event, c ?? this)},
-            mouseMove: function(event, c){this.$emit('mousemove', event, c ?? this)},
-            mouseDown: function(event, c){this.$emit('mousedown', event, c ?? this)},
-            mouseOver: function(event, c){this.$emit('mouseover', event, c ?? this)},
-            mouseOut: function(event, c){this.$emit('mouseout', event, c ?? this)},
+            drag: function(event, c){
+                this.$emit('drag', event, c ?? this);
+            },
+            drop: function(event, c){
+                this.$emit('drop', event, c ?? this);
+            },
+            dragstart: function(event, c){
+                this.$emit('dragstart', event, c ?? this);
+            },
+            dragend: function(event, c){
+                this.$emit('dragend', event, c ?? this);
+            },
+            dragenter: function(event, c){
+                this.$emit('dragenter', event, c ?? this);
+            },
+            dragleave: function(event, c){
+                this.$emit('dragleave', event, c ?? this);
+            },
             move(x, y){
                 this.mLeft = x;
                 this.mTop = y;

@@ -1,5 +1,5 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @touchend.stop="mouseUp" :style="{position, bottom, right, width, height, backgroundColor}">
+    <div class="block" @dragover.stop="dragover" @dragleave.stop="dragleave" @drop.stop="drop" @dragover.prevent :style="{position, bottom, right, width, height, backgroundColor}">
         <v-icon dark x-large>{{icon}}</v-icon>
     </div>
 </template>
@@ -23,13 +23,14 @@
             })
         },
         methods: {
-            mouseUp: function(event){
-                this.$emit('mouseup', event, this);
+            drop: function(event){
+                this.icon = 'mdi-delete';
+                this.$emit('drop', event, this);
             },
-            mouseOver(e, c){
+            dragover(e, c){
                 this.icon = 'mdi-delete-empty';
             },
-            mouseOut(e, c){
+            dragleave(e, c){
                 this.icon = 'mdi-delete';
             },
         },

@@ -1,13 +1,13 @@
 <template>
-    <div class="block" @mouseout.stop="mouseOut" @mouseover.stop="mouseOver" @mouseup.stop="mouseUp" @mousemove.stop="mouseMove" @mousedown.stop="mouseDown" @touchend.stop="mouseUp" @touchmove.stop="mouseMove" @touchstart.stop="mouseDown" @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
+    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <span>選擇: </span>
         <div style="display: flex; min-height: 40px;">
             <span>標題: </span>
-            <calculate :b-code.sync="codeTree"  :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
+            <calculate :b-code.sync="codeTree"  @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
         </div>
         <div style="display: flex; min-height: 40px;">
             <span>選項: </span>
-            <blocks :allow-type="[TYPE.SELECT_OPTION]" :b-code.sync="code" :mouseout="mouseOut" :mouseover="mouseOver" :mouseup="mouseUp" :mousemove="mouseMove" :mousedown="mouseDown" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="background-color: #5e9aff; border-radius: 10px;"></blocks>
+            <blocks :allow-type="[TYPE.SELECT_OPTION]" :b-code.sync="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="background-color: #5e9aff; border-radius: 10px;"></blocks>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -103,11 +103,24 @@
             }
         },
         methods: {
-            mouseUp: function(event, c){this.$emit('mouseup', event, c ?? this)},
-            mouseMove: function(event, c){this.$emit('mousemove', event, c ?? this)},
-            mouseDown: function(event, c){this.$emit('mousedown', event, c ?? this)},
-            mouseOver: function(event, c){this.$emit('mouseover', event, c ?? this)},
-            mouseOut: function(event, c){this.$emit('mouseout', event, c ?? this)},
+            drag: function(event, c){
+                this.$emit('drag', event, c ?? this);
+            },
+            drop: function(event, c){
+                this.$emit('drop', event, c ?? this);
+            },
+            dragstart: function(event, c){
+                this.$emit('dragstart', event, c ?? this);
+            },
+            dragend: function(event, c){
+                this.$emit('dragend', event, c ?? this);
+            },
+            dragenter: function(event, c){
+                this.$emit('dragenter', event, c ?? this);
+            },
+            dragleave: function(event, c){
+                this.$emit('dragleave', event, c ?? this);
+            },
             move(x, y){
                 this.mLeft = x;
                 this.mTop = y;
