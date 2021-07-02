@@ -15,8 +15,6 @@
     import {BlockBase} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
 
-    var esprima = require('esprima');
-
     export default {
         props: {
             contextMenuItemClick: {

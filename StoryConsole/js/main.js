@@ -250,6 +250,10 @@ const defaultStory = './story/放學回家啦！.zip';
                 {
                     eval(command.exec);
                 }
+                else if (command.clear != undefined)
+                {
+                    vApp.clearScreen();
+                }
                 else if (command.goto != undefined)
                 {
                     gameStatus = GameStatus.GOTO;

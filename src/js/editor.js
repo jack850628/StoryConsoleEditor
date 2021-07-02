@@ -30,6 +30,7 @@ import Variable from '@/js/components/Variable.vue';
 import GoTo from '@/js/components/GoTo.vue';
 import Continue from '@/js/components/Continue.vue';
 import Break from '@/js/components/Break.vue';
+import Clear from '@/js/components/Clear.vue';
 
 var esprima = require('esprima');
 
@@ -58,6 +59,7 @@ Vue.component('variable', Variable);
 Vue.component('go-to', GoTo);
 Vue.component('continue', Continue);
 Vue.component('break', Break);
+Vue.component('clear', Clear);
 
 // Vue.use(Vuex);
 
