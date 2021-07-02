@@ -415,7 +415,7 @@ const defaultStory = './story/放學回家啦！.zip';
             if(time > 0){
                 setTimeout(() => f(resolve, reject), 1000);
                 time -= 1000;
-                if(args && !args.notShowDot) vApp.appebdTextToScreenlastLine('.');
+                if(!args || !args.notShowDot) vApp.appebdTextToScreenlastLine('.');
             }else{
                 vApp.appebdTextToScreen('');
                 resolve();
