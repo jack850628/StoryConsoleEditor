@@ -1,4 +1,4 @@
-const VERSION = "1.0.0922";
+const VERSION = "1.1.0702";
 const DB_VERSION = 1;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";

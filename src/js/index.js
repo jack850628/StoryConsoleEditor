@@ -8,6 +8,7 @@ import {default as eventBus, EVENT} from './EventBus.js';
 
 const JSZip = require('jszip');
 const JSZipUtils = require('jszip-utils');
+const PACKAGE = require('../../package.json');
 
 export var story = [
     
@@ -48,7 +49,7 @@ window.onload = function(){
         el: '#app',
         vuetify,
         data: {
-            VERSION: '1.1.0126',
+            VERSION: PACKAGE.version,
             DEFAULT_FILE_NAMES,
             drawer: null,
             storyFile: [
