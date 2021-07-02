@@ -1,9 +1,15 @@
 <template>
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
-        <div style="display: flex; min-height: 40px;">
-            <span>暫停:</span>
-            <calculate :b-code.sync="codeTree" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
-            <span>秒</span>
+        <div>
+            <div style="display: flex; min-height: 40px;">
+                <span>暫停:</span>
+                <calculate :b-code.sync="codeTree" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
+                <span>秒</span>
+            </div>
+            <div>
+                <input type="checkbox" :id="`not-show-dot-${_uid}`" v-model="args.notShowDot">
+                <label :for="`not-show-dot-${_uid}`">不顯示點</label>
+            </div>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -26,6 +32,10 @@
             calculable: {
                 type: String,
                 default: "",
+            },
+            args: {
+                type: Object,
+                default: ()=> ({}),
             },
             contextMenuItemClick: {
                 type: Function,
@@ -50,13 +60,19 @@
                     this.calculableStr = createMathString(val);
                 },
                 deep: true
+            },
+            args: {
+                handler(val){
+                    this.$emit('update:args', val);
+                },
+                deep: true
             }
         },
         computed:{
             calculableStr: {
-                get(){
-                    return this.calculable;
-                },
+                // get(){
+                //     return this.calculable;
+                // },
                 set(val){
                     this.$emit('update:calculable', val);
                 }

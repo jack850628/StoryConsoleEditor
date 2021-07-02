@@ -219,12 +219,12 @@ const defaultStory = './story/放學回家啦！.zip';
                 var command = commands[floorsLine[floor].line];
                 if (command.show != undefined)
                 {
-                    await show(command.show, storyName);
+                    await show(command.show, command.args, storyName);
                     if (gameStatus == GameStatus.STOP) return "";
                 }
                 else if (command.sleep != undefined)
                 {
-                    await wait(parseInt(eval(command.sleep)) * 1000);
+                    await wait(parseInt(eval(command.sleep)) * 1000, command.args);
                 }
                 else if (command.select != undefined)
                 {
@@ -355,7 +355,7 @@ const defaultStory = './story/放學回家啦！.zip';
         }
     }
 
-    async function show(text, storyName)
+    async function show(text, args, storyName)
     {
         var f = async function(){
             var f2 = async (resolve, reject) => {
@@ -402,19 +402,20 @@ const defaultStory = './story/放學回家啦！.zip';
         }
         while(gameStatus == GameStatus.RUN){
             vApp.appebdTextToScreen(eval(text));
+            if(args && args.notPause) break;
             vApp.appebdTextToScreen("                         按enter繼續、按0清空畫面、按1選項:");
             if(await f()) break;
         }
     }
 
-    async function wait(time)
+    async function wait(time, args)
     {   
         vApp.appebdTextToScreen('');
         var f = function(resolve, reject){
             if(time > 0){
                 setTimeout(() => f(resolve, reject), 1000);
                 time -= 1000;
-                vApp.appebdTextToScreenlastLine('.');
+                if(args && !args.notShowDot) vApp.appebdTextToScreenlastLine('.');
             }else{
                 vApp.appebdTextToScreen('');
                 resolve();

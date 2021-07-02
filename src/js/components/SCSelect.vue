@@ -94,9 +94,9 @@
                 }
             },
             calculableStr: {
-                get(){
-                    return this.calculable;
-                },
+                // get(){
+                //     return this.calculable;
+                // },
                 set(val){
                     this.$emit('update:calculable', val);
                 }
