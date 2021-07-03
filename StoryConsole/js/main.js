@@ -1,4 +1,4 @@
-const VERSION = "1.1.0702";
+const VERSION = "1.1.0703";
 const DB_VERSION = 1;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";
@@ -22,7 +22,7 @@ const defaultStory = './story/放學回家啦！.zip';
     var storyObj = null
     var SC = null;
 
-    var vApp = new Vue({
+     vApp = new Vue({
         el: '#app',
         data: {
             screenTextLineMax: 150,
@@ -80,9 +80,21 @@ const defaultStory = './story/放學回家啦！.zip';
                     this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
                 }
             },
+            appebdLinkToScreen(url, text){
+                text = text.toString();
+                this.screenTexts.push({
+                    url,
+                    text
+                });
+                if(this.screenTexts.length > this.screenTextLineMax){
+                    this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
+                }
+            },
             appebdTextToScreenlastLine(text){
                 text = text.toString();
                 var lines = text.split(/\n/g)
+                if(this.screenTexts[this.screenTexts.length - 1] instanceof Object)
+                    this.screenTexts.push('');
                 this.screenTexts[this.screenTexts.length - 1] += lines[0];
                 this.screenTexts.push(...lines.slice(1));
                 if(this.screenTexts.length > this.screenTextLineMax){
@@ -598,6 +610,7 @@ const defaultStory = './story/放學回家啦！.zip';
         vApp.appebdTextToScreen("這是一套作者作好玩的Console文字冒險遊戲框架");
         vApp.appebdTextToScreen("作者：jack850628");
         vApp.appebdTextToScreen("版本：" + VERSION);
+        vApp.appebdLinkToScreen('https://home.gamer.com.tw/artwork.php?sn=5027945', '想要試試看做自己的Console風格文字冒險遊戲嗎？');
         vApp.appebdTextToScreen("-------------------------------------------");
         await readLine();
     }

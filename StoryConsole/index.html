@@ -45,7 +45,8 @@
     <div id = 'app'>
         <div id = 'consoleScreen' class = 'keep-spaces' tabindex = '0' @keyup = 'keyboardInput'>
             <div v-for = 'text in screenTexts'>
-                <span v-if = 'text'>{{text}}</span>
+                <a v-if="text.url" :href="text.url" target="_bloak">{{text.text}}</a>
+                <span v-else-if = 'text'>{{text}}</span>
                 <br v-else/>
             </div>
             <span>&rsaquo;{{input}}</span>
