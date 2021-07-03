@@ -7,8 +7,8 @@
         <div style="display: flex; margin: 10px">
             <span>值: </span>
             <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @drag.stop="" @drop.stop="" @dragstart.stop="" @dragend.stop="" @dragenter.stop="" @dragleave.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop="">
-                <option value="true">真</option>
-                <option value="false">假</option>
+                <option :value="true">真</option>
+                <option :value="false">假</option>
             </select>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>

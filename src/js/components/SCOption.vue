@@ -5,6 +5,11 @@
             <calculate :b-code.sync="codeTree"  @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
         </div>
         <div style="display: flex; min-height: 40px;">
+            <span>如果: </span>
+            <calculate :b-code.sync="codeTreeArgIf"  @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
+            <span>就顯示此選項</span>
+        </div>
+        <div style="display: flex; min-height: 40px;">
             <span>選中後做: </span>
             <blocks :b-code.sync="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick" style="background-color: #5e9aff;"></blocks>
         </div>
@@ -30,6 +35,12 @@
                 type: String,
                 default: "",
             },
+            args: {
+                type: Object,
+                default: () => ({
+                    if: 'true'
+                }),
+            },
             bCode: {
                 type: Array,
                 default: ()=>[],
@@ -52,9 +63,28 @@
                     console.error('運算式解析錯誤',e);
                 }
             },
+            'args.if': function(val){
+                try{
+                    this.codeTreeArgIf = esprima.parseScript(val).body[0]?.expression;//在VueComponent重畫時，若重畫前與後的VueComponent是一樣的話，data是會繼續沿用而不會重建
+                }catch(e){
+                    console.error('運算式解析錯誤',e);
+                }
+            },
             codeTree: {
                 handler(val){
                     this.calculableStr = createMathString(val);
+                },
+                deep: true
+            },
+            args: {
+                handler(val){
+                    this.$emit('update:args', val);
+                },
+                deep: true
+            },
+            codeTreeArgIf: {
+                handler(val){
+                    this.args.if = createMathString(val);
                 },
                 deep: true
             }
@@ -63,6 +93,10 @@
             return ({
                 type: TYPE.SELECT_OPTION,
                 codeTree: esprima.parseScript(this.calculable).body[0]?.expression,
+                codeTreeArgIf: this.args.if
+                    ? esprima.parseScript(this.args.if).body[0]?.expression
+                    : true
+                ,
                 mTop: this.top,
                 mLeft: this.left,
                 width: 'auto',
@@ -77,7 +111,10 @@
                         text: SC_NULL.name,
                         then: [
                             
-                        ]
+                        ],
+                        args: {
+                            if: 'true',
+                        }
                     });
                 }
             })

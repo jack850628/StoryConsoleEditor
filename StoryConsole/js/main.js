@@ -1,9 +1,10 @@
-const VERSION = "1.1.0703";
+const VERSION = "1.1.0704";
 const DB_VERSION = 1;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";
 const defaultStory = './story/放學回家啦！.zip';
 // const DBName = 'StoryConsole';
+const SC_NULL = null;
 
 (function (){
     var floorsLine = [];
@@ -545,8 +546,16 @@ const defaultStory = './story/放學回家啦！.zip';
     async function select(title, option, useJsOption = false){
         vApp.appebdTextToScreen(useJsOption ? eval(title) : title);
         vApp.appebdTextToScreen('-'.repeat(title.length));
+        let iMap = {}, newI = 1;
         for (let i = 0 ; i < option.length ; i++){
-            vApp.appebdTextToScreen(`${i + 1}. ${useJsOption ? eval(option[i].text) : option[i].text}`);
+            if(
+                !option[i].args 
+                || 
+                eval(option[i].args.if)
+            ){
+                vApp.appebdTextToScreen(`${newI}. ${useJsOption ? eval(option[i].text) : option[i].text}`);
+                iMap[newI++] = i + 1;
+            }
         }
         vApp.appebdTextToScreen('-'.repeat(title.length));
 
@@ -559,9 +568,10 @@ const defaultStory = './story/放學回家啦！.zip';
                 let text = vApp.inputText();
                 selection = isNaN(text) || text == '' ? -1 : parseInt(text);
             }
-            if(selection < 1 || selection > option.length)
+            console.log(selection , newI);
+            if(selection < 1 || selection > newI - 1)
                 setTimeout(()=>f(resolve, reject));
-            else resolve(selection);
+            else resolve(iMap[selection]);
         }
         return new Promise(f);
     }
