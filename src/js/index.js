@@ -51,6 +51,7 @@ window.onload = function(){
         data: {
             VERSION: PACKAGE.version,
             DEFAULT_FILE_NAMES,
+            about: false,
             drawer: null,
             storyFile: [
             ],

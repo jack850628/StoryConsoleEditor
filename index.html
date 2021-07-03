@@ -92,7 +92,7 @@
           
             <v-app-bar color="#666666" dark app>
                 <v-app-bar-nav-icon @click="drawerClose"></v-app-bar-nav-icon>
-                <v-toolbar-title>Story Console故事編輯器 var:{{VERSION}}</v-toolbar-title>
+                <v-toolbar-title>Story Console故事編輯器</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -118,6 +118,14 @@
                         </v-btn>
                     </template>
                     <span>下載故事</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click="about = true" v-bind="attrs" v-on="on">
+                            <v-icon>mdi-information-outline</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>關於</span>
                 </v-tooltip>
             </v-app-bar>
             <v-main>
@@ -182,6 +190,26 @@
                             <v-progress-circular indeterminate color="primary"></v-progress-circular>
                             <span>請稍後</span>
                         </v-card-text>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="about" max-width="500px">
+                    <v-card>
+                        <v-card-title>
+                            關於
+                        </v-card-title>
+                        <v-card-text>
+                            Story Console故事編輯器 var:{{VERSION}}
+                            <br/>
+                            作者：jack850628
+                            <br/>
+                            <a href="https://home.gamer.com.tw/artwork.php?sn=5027945" target="_bloak">使用教學</a>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" text  @click="about = false">
+                                關閉
+                            </v-btn>
+                        </v-card-actions>
                     </v-card>
                 </v-dialog>
             </v-main>
