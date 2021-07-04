@@ -31,6 +31,8 @@ import GoTo from '@/js/components/GoTo.vue';
 import Continue from '@/js/components/Continue.vue';
 import Break from '@/js/components/Break.vue';
 import Clear from '@/js/components/Clear.vue';
+import AboutText from '@/js/components/AboutText.vue'
+import AboutLink from '@/js/components/AboutLink.vue'
 
 var esprima = require('esprima');
 
@@ -60,11 +62,12 @@ Vue.component('go-to', GoTo);
 Vue.component('continue', Continue);
 Vue.component('break', Break);
 Vue.component('clear', Clear);
+Vue.component('aboutText', AboutText);
+Vue.component('aboutLink', AboutLink);
 
 // Vue.use(Vuex);
 
 export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
-    var interval = null;
     var globalVariableUpdate = function(event){
         app.$data.globalVariables = event.detail;
     };

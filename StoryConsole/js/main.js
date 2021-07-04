@@ -568,7 +568,6 @@ const SC_NULL = null;
                 let text = vApp.inputText();
                 selection = isNaN(text) || text == '' ? -1 : parseInt(text);
             }
-            console.log(selection , newI);
             if(selection < 1 || selection > newI - 1)
                 setTimeout(()=>f(resolve, reject));
             else resolve(iMap[selection]);
@@ -616,6 +615,20 @@ const SC_NULL = null;
     {
         vApp.appebdTextToScreen("                    關於");
         vApp.appebdTextToScreen("-------------------------------------------");
+        if(storyObj.about){
+            vApp.appebdTextToScreen("                      故事");
+            vApp.appebdTextToScreen("                ---------------");
+            for (let i of storyObj.about)//這是兼容舊版本的故事檔，about是在ver: 1.1.0704版本時加入
+            {
+                if(i.aboutText){
+                    vApp.appebdTextToScreen(i.aboutText);
+                }else if(i.aboutLinkName){
+                    vApp.appebdLinkToScreen(i.aboutLinkUrl, i.aboutLinkName);
+                }
+            }
+        }
+        vApp.appebdTextToScreen("                  遊戲框架");
+        vApp.appebdTextToScreen("                ---------------");
         vApp.appebdTextToScreen("         StoryConsole Web Version");
         vApp.appebdTextToScreen("這是一套作者作好玩的Console文字冒險遊戲框架");
         vApp.appebdTextToScreen("作者：jack850628");

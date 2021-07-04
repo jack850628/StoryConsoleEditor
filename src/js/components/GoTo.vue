@@ -1,7 +1,7 @@
 <template>
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, position, top: mTop, left: mLeft, width, height, minHeight, minWidth, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <span>前往: </span>
-        <select v-model="_fileName" @mousedown.stop="">
+        <select v-model="fileName" @mousedown.stop="">
             <option value="">主選單</option>
             <option v-for="(file, index) in $root.storyFile" :key="index" :value="file.name">{{file.name}}</option>
         </select>
@@ -19,8 +19,6 @@
     import {BlockBase} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
     import {EVENT} from '@/js/EventBus.js';
-
-    var esprima = require('esprima');
 
     export default {
         props: {
@@ -58,15 +56,10 @@
                 }),
             })
         },
-        computed:{
-            _fileName: {
-                get(){
-                    return this.fileName
-                },
-                set(val){
-                    this.$emit('update:fileName', val);
-                }
-            },
+        watch: {
+            fileName(val){
+                this.$emit('update:fileName', val);
+            }
         },
         methods: {
             drag: function(event, c){

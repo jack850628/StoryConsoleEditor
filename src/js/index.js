@@ -28,7 +28,6 @@ export var story = [
 // });
 
 window.onload = function(){
-    var i = 0;
 
     var fileStatusChanged = function({detail}){
         let [page] = app.$data.openedPages.filter((item) => item.name == detail.fileName);
@@ -56,6 +55,11 @@ window.onload = function(){
             storyFile: [
             ],
             defaultFile: [
+                {
+                    name: DEFAULT_FILE_NAMES.ABOUT,
+                    alias: '關於',
+                    modified: false,
+                },
                 {
                     name: DEFAULT_FILE_NAMES.CHARACTER,
                     alias: '人物介紹',
@@ -229,7 +233,16 @@ window.onload = function(){
                 this.openedPages.splice(index, 1);
             },
             iframeOnLoad({target: iframe}, name){
-                iframe.contentWindow.SCEditor.load(name, story.filter(item => item.name == name)[0], JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE)[0].complete), [...this.storyFile], eventBus);
+                var storyData = story.filter(item => item.name == name)[0];
+                if(!storyData && [DEFAULT_FILE_NAMES.ABOUT].includes(name)){//這是兼容舊版本的故事檔，DEFAULT_FILE_NAMES.ABOUT是在ver: 1.1.0704版本時加入
+                    storyData = {
+                        name: name,
+                        complete: JSON.stringify([]),
+                        edit: [],
+                    };
+                    story.push(storyData);
+                }
+                iframe.contentWindow.SCEditor.load(name, storyData, JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE)[0].complete), [...this.storyFile], eventBus);
             },
             openFileMenu(event, index){
                 this.showFileMenuRightClickItemIndex = index;

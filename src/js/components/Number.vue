@@ -1,6 +1,6 @@
 <template>
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, position, top: mTop, left: mLeft, width, height, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
-        <input type="number" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model.number="code.value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
+        <input type="number" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model.number="bCode.value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
                 <v-list-item v-for="(item, index) in contextMenuItems" :key="index" @click="contextMenuItemClick($event, _self, item, index)">
@@ -14,8 +14,6 @@
 <script>
     import {BlockBase} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
-
-    var esprima = require('esprima');
 
     export default {
         props: {
@@ -32,16 +30,6 @@
                 default: () => [],
             },
             ...new BlockBase({backgroundColor: '#6200ff'}),
-        },
-        computed:{
-            code: {
-                get(){
-                    return this.bCode;
-                },
-                set(val){
-                    this.$emit('update:bCode', val);
-                }
-            },
         },
         data(){
             return ({

@@ -1,6 +1,6 @@
 <template>
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, justifyContent, position, top: mTop, left: mLeft, width, height, minHeight, minWidth, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
-        <span>{{code.value ? '真' : '假'}}</span>
+        <span>{{bCode.value ? '真' : '假'}}</span>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
                 <v-list-item v-for="(item, index) in contextMenuItems" :key="index" @click="contextMenuItemClick($event, _self, item, index)">
@@ -14,8 +14,6 @@
 <script>
     import {BlockBase} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
-
-    var esprima = require('esprima');
 
     export default {
         props: {
@@ -32,16 +30,6 @@
                 default: () => [],
             },
             ...new BlockBase(),
-        },
-        computed:{
-            code: {
-                get(){
-                    return this.bCode;
-                },
-                set(val){
-                    this.$emit('update:bCode', val);
-                }
-            }
         },
         data(){
             return ({

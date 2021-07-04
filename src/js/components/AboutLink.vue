@@ -1,15 +1,12 @@
 <template>
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <div style="display: flex; margin: 10px">
-            <span>名稱: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="name" @drag.stop="" @drop.stop="" @dragstart.stop="" @dragend.stop="" @dragenter.stop="" @dragleave.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""/>
+            <span>連結名稱: </span>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="name" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         </div>
         <div style="display: flex; margin: 10px">
-            <span>值: </span>
-            <select style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="value" @drag.stop="" @drop.stop="" @dragstart.stop="" @dragend.stop="" @dragenter.stop="" @dragleave.stop="" @touchend.stop="" @touchmove.stop="" @touchstart.stop="">
-                <option :value="true">真</option>
-                <option :value="false">假</option>
-            </select>
+            <span>連結網址: </span>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="url" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -31,9 +28,9 @@
                 type: String,
                 default: '',
             },
-            value: {
-                type: Number,
-                default: 0,
+            url: {
+                type: String,
+                default: '',
             },
             contextMenuItemClick: {
                 type: Function,
@@ -44,14 +41,6 @@
                 default: () => [],
             },
             ...new BlockBase(),
-        },
-        watch: {
-            name(val){
-                this.$emit('update:name', val);
-            },
-            value(val){
-                this.$emit('update:value', val);
-            }
         },
         data(){
             return ({
@@ -67,12 +56,19 @@
                 menuY: 0,
                 data(){
                     return ({
-                        name: '',
-                        type: 'boolean',
-                        value: true,
+                        aboutLinkName: '',
+                        aboutLinkUrl: '',
                     });
                 }
             })
+        },
+        watch:{
+            name(val){
+                this.$emit('update:name', val);
+            },
+            url(val){
+                this.$emit('update:url', val);
+            }
         },
         methods: {
             drag: function(event, c){
@@ -111,7 +107,7 @@
 </script>
 
 <style scoped>
-    input, select{
+    input{
         background-color: white;
     }
 </style>

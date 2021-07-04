@@ -18,6 +18,10 @@
             <!-- 人物介紹 -->
             <character v-else-if="'detailed' in item" :index="index" :name.sync="item.name" :detailed.sync="item.detailed" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></character>
             <!-- 人物介紹 -->
+            <!-- 關於 -->
+            <about-text v-else-if="'aboutText' in item" :index="index" :text.sync="item.aboutText" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></about-text>
+            <about-link v-else-if="'aboutLinkName' in item" :index="index" :name.sync="item.aboutLinkName" :url.sync="item.aboutLinkUrl" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></about-link>
+            <!-- 關於 -->
             <!-- 全域變數 -->
             <string-variable v-else-if="'type' in item && item.type == 'string'" :index="index" :name.sync="item.name" :value.sync="item.value" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></string-variable>
             <number-variable v-else-if="'type' in item && item.type == 'number'" :index="index" :name.sync="item.name" :value.sync="item.value" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></number-variable>
@@ -36,10 +40,13 @@
 
 <script>
     import {TYPE} from '@/js/Config.js';
+import AboutText from './AboutText.vue';
+import AboutLink from './AboutLink.vue';
 
     var esprima = require('esprima');
 
     export default {
+  components: { AboutText, AboutLink },
         props: {
             bCode: {
                 type: Array,

@@ -11,4 +11,5 @@ export const DEFAULT_FILE_NAMES = {
     STORY: 'story',
     CHARACTER: 'character',
     GLOBAL_VARIABLE: 'globalVariable',
+    ABOUT: 'about',
 }

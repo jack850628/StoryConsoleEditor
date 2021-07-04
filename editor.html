@@ -44,7 +44,21 @@
                 <div id="main">
                     <div style="width: 150px; overflow-y: auto;">
                         <v-expansion-panels dark focusable>
-                            <template v-if="fileName == DEFAULT_FILE_NAMES.CHARACTER">
+                            <template v-if="fileName == DEFAULT_FILE_NAMES.ABOUT">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>文字</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <about-text :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></about-text>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>連結</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <about-link :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></about-link>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </template>
+                            <template v-else-if="fileName == DEFAULT_FILE_NAMES.CHARACTER">
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>人物介紹</v-expansion-panel-header>
                                     <v-expansion-panel-content>

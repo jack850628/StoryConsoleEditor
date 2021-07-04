@@ -2,11 +2,11 @@
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, height, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <div style="display: flex; margin: 10px">
             <span>名稱: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_name" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="name" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         </div>
         <div style="display: flex; margin: 10px">
             <span>值: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="_value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
+            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -19,10 +19,8 @@
 </template>
 
 <script>
-    import {BlockBase, createMathString} from '@/js/JTools.js';
+    import {BlockBase} from '@/js/JTools.js';
     import {TYPE} from '@/js/Config.js';
-    
-    var esprima = require('esprima');
 
     export default {
         props: {
@@ -44,6 +42,14 @@
             },
             ...new BlockBase(),
         },
+        watch: {
+            name(val){
+                this.$emit('update:name', val);
+            },
+            value(val){
+                this.$emit('update:value', val);
+            }
+        },
         data(){
             return ({
                 type: TYPE.CODE_BLOCK,
@@ -64,24 +70,6 @@
                     });
                 }
             })
-        },
-        computed:{
-            _name: {
-                get(){
-                    return this.name
-                },
-                set(val){
-                    this.$emit('update:name', val);
-                }
-            },
-            _value: {
-                get(){
-                    return this.value
-                },
-                set(val){
-                    this.$emit('update:value', val);
-                }
-            }
         },
         methods: {
             drag: function(event, c){
