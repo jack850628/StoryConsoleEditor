@@ -106,9 +106,13 @@ window.onload = function(){
         computed: {
             storyFileNameForDialog: {
                 get(){
-                    if(this.storyFileDialogData.name.match(/^$|\s+/)){
+                    if(!this.storyFileDialogData.name.match(/^(?!\s)[^<>:"\\\/\|?*]+$/)){
                         this.storyFileDialogData.errorMessage = '名稱不被允許';
-                    }else if(this.storyFile.find((item) => item.name == this.storyFileDialogData.name)){
+                    }else if(
+                        Object.keys(DEFAULT_FILE_NAMES).find(key => DEFAULT_FILE_NAMES[key] == this.storyFileDialogData.name)
+                        ||
+                        this.storyFile.find((item) => item.name == this.storyFileDialogData.name)
+                    ){
                         this.storyFileDialogData.errorMessage = '名稱重複';
                     }else{
                         this.storyFileDialogData.errorMessage = '';
