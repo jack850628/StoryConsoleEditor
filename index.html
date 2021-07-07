@@ -129,22 +129,28 @@
                 </v-tooltip>
             </v-app-bar>
             <v-main>
-                <v-tabs dark show-arrows v-model="openedPageIndex">
-                    <v-tabs-slider color="#FFFFFF"></v-tabs-slider>
-                    <v-tab v-for="(item, index) in openedPages" :key="index">
-                        <v-badge color="#FFFFFF" :value="item.modified" left dot>
-                            <span>{{item.alias}}</span>
-                        </v-badge>
-                        <v-btn icon color="deep-orange" @click="openedPageClose(item.name)">
-                            <v-icon color="red darken-2">mdi-close</v-icon>
-                        </v-btn>
-                    </v-tab>
-                </v-tabs>
-                <v-tabs-items v-model="openedPageIndex" dark>
-                    <v-tab-item v-for="(item, index) in openedPages" :key="index">
-                      <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item.name)"></iframe>
-                    </v-tab-item>
-                </v-tabs-items>
+                <template v-if="openedPages.length > 0">
+                    <v-tabs dark show-arrows v-model="openedPageIndex">
+                        <v-tabs-slider color="#FFFFFF"></v-tabs-slider>
+                        <v-tab v-for="(item, index) in openedPages" :key="index">
+                            <v-badge color="#FFFFFF" :value="item.modified" left dot>
+                                <span>{{item.alias}}</span>
+                            </v-badge>
+                            <v-btn icon color="deep-orange" @click="openedPageClose(item.name)">
+                                <v-icon color="red darken-2">mdi-close</v-icon>
+                            </v-btn>
+                        </v-tab>
+                    </v-tabs>
+                    <v-tabs-items v-model="openedPageIndex" dark>
+                        <v-tab-item v-for="(item, index) in openedPages" :key="index">
+                          <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item.name)"></iframe>
+                        </v-tab-item>
+                    </v-tabs-items>
+                </template>
+                <div v-else style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1;">
+                    <h1>歡迎</h1>
+                    <span>第一次使用嗎？看看<a href="https://home.gamer.com.tw/artwork.php?sn=5027945" target="_bloak">使用教學</a>吧。</span>
+                </div>
                 <v-dialog v-model="storyFileDialog" max-width="500px" persistent>
                     <v-card>
                         <v-card-title>
