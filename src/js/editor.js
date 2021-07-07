@@ -162,71 +162,69 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
             }
         },
         methods: {
-            drag(e){
+            drag(event){
             },
-            dragstart(e, dragingNode){
+            dragstart(event, dragingNode){
                 if(dragingNode){
                     this.dragingNode = dragingNode;
                 }
-                e.target.style.opacity = 0.5;
+                event.target.style.opacity = 0.5;
             },
-            dragend(e){
-                e.target.style.opacity = '';
+            dragend(event){
+                event.target.style.opacity = '';
             },
-            drop(e, c){
-                if(this.dragingNode){
-                    if(c){
-                        c.$data.entering = false;
-                        let blockArea = (c.$data.type == undefined) //判斷滑鼠是否在程式碼區塊上，因為程式碼區塊的data中並沒有type
-                            ? c
-                            : c.$parent;
-                        if(blockArea.$props.allowType.includes(this.dragingNode.$data.type)){
-                            let block;
-                            if(this.dragingNode.$props.isDemo){
-                                block = this.dragingNode.$data.data();
-                            }else if(this.dragingNode.$parent.code instanceof Array){
-                                [block] = this.dragingNode.$parent.code.splice(this.dragingNode.$props.index, 1);
-                            }else{
-                                block = this.dragingNode.$parent.code;
-                            }
+            drop(event, component){
+                if(this.dragingNode && component){
+                    component.$data.entering = false;
+                    let blockArea = (component.$data.type == undefined) //判斷滑鼠是否在程式碼區塊上，因為程式碼區塊的data中並沒有type
+                        ? component
+                        : component.$parent;
+                    if(blockArea.$props.allowType.includes(this.dragingNode.$data.type)){
+                        let block;
+                        if(this.dragingNode.$props.isDemo){
+                            block = this.dragingNode.$data.data();
+                        }else if(this.dragingNode.$parent.code instanceof Array){
+                            [block] = this.dragingNode.$parent.code.splice(this.dragingNode.$props.index, 1);
+                        }else{
+                            block = this.dragingNode.$parent.code;
+                        }
 
-                            if(blockArea.code instanceof Array){
-                                if(c.$data.type){//判斷滑鼠是否在程式碼區塊上，因為程式碼區塊的data中並沒有type
-                                    if(
-                                        blockArea.code !== this.dragingNode.$parent.code//當要將程式碼從一個區塊移至另一個區塊的某個程式碼下方時
-                                        ||
-                                        this.dragingNode.$props.index > c.$props.index//因為移動程式碼時，會先將程式碼移出在移入，所以在移出的過程中要移動的程式碼下方的所有程式碼都會發生props.index比實際在array中的index還要多1
-                                    ){
-                                        blockArea.code.splice(c.$props.index, 0, block);//若index + 1的話，就會是搬移在目標程式碼的上面
-                                    }else{
-                                        blockArea.code.splice(c.$props.index, 0, block);//所以當程式碼是在同一個程式碼區塊搬移時，當要將程式碼從原本的位置往下移時就不用將index + 1
-                                    }
+                        if(blockArea.code instanceof Array){
+                            if(component.$data.type){//判斷滑鼠是否在程式碼區塊上，因為程式碼區塊的data中並沒有type
+                                if(
+                                    blockArea.code !== this.dragingNode.$parent.code//當要將程式碼從一個區塊移至另一個區塊的某個程式碼下方時
+                                    ||
+                                    this.dragingNode.$props.index > component.$props.index//因為移動程式碼時，會先將程式碼移出在移入，所以在移出的過程中要移動的程式碼下方的所有程式碼都會發生props.index比實際在array中的index還要多1
+                                ){
+                                    blockArea.code.splice(component.$props.index, 0, block);//若index + 1的話，就會是搬移在目標程式碼的上面
                                 }else{
-                                    blockArea.code.push(block);
-                                }
-                                if(!(this.dragingNode.$parent.code instanceof Array)){
-                                    this.dragingNode.$parent.code = SC_NULL;
+                                    blockArea.code.splice(component.$props.index, 0, block);//所以當程式碼是在同一個程式碼區塊搬移時，當要將程式碼從原本的位置往下移時就不用將index + 1
                                 }
                             }else{
-                                if(blockArea.code.type != SC_NULL.type && blockArea.code.name != SC_NULL.name){
-                                    this.tempCodeTree.push(blockArea.code);
-                                }
-                                blockArea.code = block;
-                                if(!(this.dragingNode.$parent.code instanceof Array)){
-                                    this.dragingNode.$parent.code = SC_NULL;
-                                }
+                                blockArea.code.push(block);
+                            }
+                            if(!(this.dragingNode.$parent.code instanceof Array)){
+                                this.dragingNode.$parent.code = SC_NULL;
+                            }
+                        }else{
+                            if(blockArea.code.type != SC_NULL.type && blockArea.code.name != SC_NULL.name){
+                                this.tempCodeTree.push(blockArea.code);
+                            }
+                            blockArea.code = block;
+                            if(!(this.dragingNode.$parent.code instanceof Array)){
+                                this.dragingNode.$parent.code = SC_NULL;
                             }
                         }
                     }
                 }
                 this.dragingNode = null;
             },
-            dragenter(e, c){
-                e.preventDefault()
-                if(c != null && c.$data) c.$data.entering = true;
+            dragenter(event, component){
+                event.preventDefault()
+                if(component != null && component.$data) component.$data.entering = true;
             },
-            dragleave(e, c){
-                if(c != null && c.$data) c.$data.entering = false;
+            dragleave(event, component){
+                if(component != null && component.$data) component.$data.entering = false;
             },
             trashMouseUp(){
                 if(this.dragingNode){
@@ -241,12 +239,12 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                 }
                 this.dragingNode = null;
             },
-            contextMenuItemClick(e, c, item, index){
+            contextMenuItemClick(event, component, item, index){
                 switch(index){
                     case 0:{
-                        let data = (c.$parent.code instanceof Array)
-                            ? c.$parent.code[c.$props.index]
-                            : c.$parent.code;
+                        let data = (component.$parent.code instanceof Array)
+                            ? component.$parent.code[component.$props.index]
+                            : component.$parent.code;
                         this.tempCodeTree.push(JSON.parse(JSON.stringify(data)));
                     }
                 }
