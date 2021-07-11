@@ -1,4 +1,4 @@
-const VERSION = "1.1.0704";
+const VERSION = "1.1.0711";
 const DB_VERSION = 1;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";
@@ -23,7 +23,7 @@ const SC_NULL = null;
     var storyObj = null
     var SC = null;
 
-     vApp = new Vue({
+    var vApp = new Vue({
         el: '#app',
         data: {
             screenTextLineMax: 150,
@@ -74,17 +74,18 @@ const SC_NULL = null;
                     this.input += text;
                 }
             },
-            appebdTextToScreen(text){
+            appebdTextToScreen(text, style = {}){
                 text = text.toString();
-                this.screenTexts.push(...text.split(/\n/g));
+                this.screenTexts.push(...text.split(/\n/g).map(i => ({text: i, style})));
                 if(this.screenTexts.length > this.screenTextLineMax){
                     this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
                 }
             },
-            appebdLinkToScreen(url, text){
+            appebdLinkToScreen(url, text, style){
                 text = text.toString();
                 this.screenTexts.push({
                     url,
+                    style,
                     text
                 });
                 if(this.screenTexts.length > this.screenTextLineMax){
@@ -93,10 +94,14 @@ const SC_NULL = null;
             },
             appebdTextToScreenlastLine(text){
                 text = text.toString();
-                var lines = text.split(/\n/g)
-                if(this.screenTexts[this.screenTexts.length - 1] instanceof Object)
-                    this.screenTexts.push('');
-                this.screenTexts[this.screenTexts.length - 1] += lines[0];
+                var lines = text.split(/\n/g).map(i => {
+                    let text = {
+                        ...this.screenTexts[this.screenTexts.length - 1]
+                    };
+                    text.text = i;
+                    return text;
+                });
+                this.screenTexts[this.screenTexts.length - 1].text += lines[0].text;
                 this.screenTexts.push(...lines.slice(1));
                 if(this.screenTexts.length > this.screenTextLineMax){
                     this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
@@ -187,7 +192,6 @@ const SC_NULL = null;
                         main()
                     });
                     break exit;
-                    break;
                 case 5:
                     await about();
                     break;
@@ -408,6 +412,7 @@ const SC_NULL = null;
                             }
                         }else if (selected == 3){
                             gameStatus = GameStatus.STOP;
+                            vApp.clearScreen();
                             resolve();
                             break;
                         }
@@ -420,7 +425,12 @@ const SC_NULL = null;
         while(gameStatus == GameStatus.RUN){
             vApp.appebdTextToScreen(eval(text));
             if(args && args.notPause) break;
-            vApp.appebdTextToScreen("                         按enter繼續、按0清空畫面、按1選項:");
+            vApp.appebdTextToScreen(
+                "按enter繼續、按0清空畫面、按1選項",
+                {
+                    float: 'right'
+                }
+            );
             if(await f()) break;
         }
     }
