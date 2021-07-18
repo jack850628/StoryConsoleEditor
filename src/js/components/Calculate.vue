@@ -1,5 +1,5 @@
 <template>
-    <div @dragenter.stop="dragenter" @dragleave.stop="dragleave" @drop.stop="drop" @dragover.prevent :style="{display, alignItems, minWidth, minHeight, marginTop, marginBottom, backgroundColor, borderRadius: '50px'}">
+    <div @dragenter.stop="dragenter" @dragleave.stop="dragleave" @drop.stop="drop" @dragover.prevent :style="{display, alignItems, minWidth, minHeight, marginTop, marginBottom, backgroundColor, borderRadius, flex}">
         <operator v-if="code && (code.type == esprima.Syntax.BinaryExpression || code.type == esprima.Syntax.AssignmentExpression)" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></operator>
         <unary-operator v-else-if="code && code.type == esprima.Syntax.UnaryExpression" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></unary-operator>
         <bool v-else-if="code && code.type == esprima.Syntax.Literal && typeof(code.value) == 'boolean'" :b-code="code" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></bool>
@@ -74,6 +74,8 @@
                 marginTop: 5,
                 marginBottom: 5,
                 backgroundColor: "#5e9aff",
+                borderRadius: '50px',
+                flex: 1,
             })
         }
     }

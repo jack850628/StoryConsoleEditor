@@ -5,6 +5,7 @@ import { saveAs } from 'file-saver';
 
 import {DEFAULT_FILE_NAMES} from './Config.js';
 import {default as eventBus, EVENT} from './EventBus.js';
+import {StoryFileItem, OpenedPagesItem} from './JTools';
 
 const JSZip = require('jszip');
 const JSZipUtils = require('jszip-utils');
@@ -55,21 +56,18 @@ window.onload = function(){
             storyFile: [
             ],
             defaultFile: [
-                {
-                    name: DEFAULT_FILE_NAMES.ABOUT,
-                    alias: '關於',
-                    modified: false,
-                },
-                {
-                    name: DEFAULT_FILE_NAMES.CHARACTER,
-                    alias: '人物介紹',
-                    modified: false,
-                },
-                {
-                    name: DEFAULT_FILE_NAMES.GLOBAL_VARIABLE,
-                    alias: '全域變數',
-                    modified: false,
-                }
+                new OpenedPagesItem(
+                    DEFAULT_FILE_NAMES.ABOUT,
+                    '關於'
+                ),
+                new OpenedPagesItem(
+                    DEFAULT_FILE_NAMES.CHARACTER,
+                    '人物介紹'
+                ),
+                new OpenedPagesItem(
+                    DEFAULT_FILE_NAMES.GLOBAL_VARIABLE,
+                    '全域變數'
+                )
             ],
             openedPages: [
 
@@ -171,10 +169,7 @@ window.onload = function(){
                             complete: JSON.stringify([]),
                             edit: [],
                         });
-                        this.storyFile.push({
-                            name: this.storyFileDialogData.name,
-                            modified: false,
-                        });
+                        this.storyFile.push(new StoryFileItem(this.storyFileDialogData.name));
                         eventBus.$emit(EVENT.UPDATE_STORY_FILE.NAME, {
                             type: EVENT.UPDATE_STORY_FILE.TYPE.ADD,
                             fileName: this.storyFileDialogData.name,
@@ -220,11 +215,11 @@ window.onload = function(){
             filesListClick(name, alias, modified){
                 var index = this.openedPages.findIndex((item) => item.name == name);
                 if(index == -1){
-                    index = this.openedPages.push({
+                    index = this.openedPages.push(new OpenedPagesItem(
                         name,
                         alias,
-                        modified: modified,
-                    }) - 1;
+                        modified
+                    )) - 1;
                 }
                 this.openedPageIndex = index;
                 this.drawerClose();
@@ -359,10 +354,7 @@ window.onload = function(){
                             edit: JSON.parse(data),
                         });
                         if(!(defaultFileNames.includes(name))){
-                            this.storyFile.push({
-                                name,
-                                modified: false,
-                            });
+                            this.storyFile.push(new StoryFileItem(name));
                         }else if(name == DEFAULT_FILE_NAMES.STORY){
                             this.story = JSON.parse(data);
                         }

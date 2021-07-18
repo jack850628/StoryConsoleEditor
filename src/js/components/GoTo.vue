@@ -96,14 +96,14 @@
             storyFileUpdate({detail}){
                 switch(detail.type){
                     case EVENT.UPDATE_STORY_FILE.TYPE.EDIT_NAME: {
-                        if(detail.oldFileName == this._fileName){
-                            this._fileName = detail.fileName;
+                        if(detail.oldFileName == this.fileName){
+                            this.fileName = detail.fileName;
                         }
                         break;
                     }
                     case EVENT.UPDATE_STORY_FILE.TYPE.DELETE: {
-                        if(detail.fileName == this._fileName){
-                            this._fileName = '';
+                        if(detail.fileName == this.fileName){
+                            this.fileName = '';
                         }
                         break;
                     }

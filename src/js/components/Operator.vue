@@ -1,5 +1,5 @@
 <template>
-    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
+    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius, flex}">
         <div class="operator">
             <template v-if="['=', '+=', '-='].includes(code.operator)">
                 <calculate :b-code.sync="code.left" :allowType="[TYPE.LIFT_VAR_BLOCK]" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></calculate>
@@ -48,6 +48,8 @@
                 width: 'auto',
                 minHeight: 40,
                 position: "static",
+                borderRadius: '50px',
+                flex: 1,
                 entering: false,
                 showMenu: false,
                 menuX: 0,

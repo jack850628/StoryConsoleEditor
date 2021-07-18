@@ -1,5 +1,5 @@
 <template>
-    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, justifyContent, position, top: mTop, left: mLeft, width, height, minHeight, minWidth, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
+    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, justifyContent, position, top: mTop, left: mLeft, width, height, minHeight, minWidth, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius, flex}">
         <span>{{bCode.value ? '真' : '假'}}</span>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
@@ -44,6 +44,8 @@
                 minHeight: 40,
                 minWidth: 50,
                 position: "static",
+                borderRadius: '50px',
+                flex: 1,
                 entering: false,
                 showMenu: false,
                 menuX: 0,

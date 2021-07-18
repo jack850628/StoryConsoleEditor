@@ -2,7 +2,7 @@ import Vue from 'vue';
 // import {default as Vuex, mapState} from 'vuex'
 import vuetify from '@/plugins/vuetify';
 import {TYPE, DRAG_BLOCK_OFFSET_X, DRAG_BLOCK_OFFSET_Y, Y_SCROLL_TRIGGER_HEIGHT, DEFAULT_FILE_NAMES} from './Config.js';
-import {SC_NULL} from './JTools.js';
+import {SC_NULL, StoryFileItem} from './JTools.js';
 import {EVENT} from './EventBus.js';
 
 import Blocks from '@/js/components/Blocks.vue';
@@ -74,12 +74,13 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
     var storyFileUpdate = function({detail}){
         switch(detail.type){
             case EVENT.UPDATE_STORY_FILE.TYPE.ADD: {
-                app.$data.storyFile.push(detail.fileName);
+                app.$data.storyFile.push(new StoryFileItem(detail.fileName));
                 break;
             }
             case EVENT.UPDATE_STORY_FILE.TYPE.EDIT_NAME: {
-                fileName = app.$data.fileName = detail.fileName;
-                Vue.set(app.$data.storyFile, detail.index, detail.fileName);
+                if(fileName == detail.oldFileName)
+                    fileName = app.$data.fileName = detail.fileName;
+                app.$data.storyFile[detail.index].name = detail.fileName;
                 break;
             }
             case EVENT.UPDATE_STORY_FILE.TYPE.DELETE: {

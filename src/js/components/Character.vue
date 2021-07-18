@@ -6,7 +6,7 @@
         </div>
         <div style="display: flex; margin: 10px">
             <span>人物介紹: </span>
-            <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="detailed" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
+            <textarea type="text" style="width: 100%; margin-left: 10px; margin-right: 10px; background-color: white;" v-model="detailed" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>

@@ -68,3 +68,18 @@ export class BlockBase{
         default: false,
     }
 };
+
+export class StoryFileItem{
+    constructor(name, modified = false){
+        this.name = name;
+        this.modified = modified;
+    }
+}
+
+export class OpenedPagesItem{
+    constructor(name, alias, modified = false){
+        this.name = name;
+        this.alias = alias;
+        this.modified = modified;
+    }
+}

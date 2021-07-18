@@ -1,6 +1,6 @@
 <template>
-    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, position, top: mTop, left: mLeft, width, height, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius: '50px'}">
-        <input type="text" style="width: 100%; margin-left: 10px; margin-right: 10px;" v-model="bCode.value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
+    <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{display, alignItems, position, top: mTop, left: mLeft, width, height, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate', borderRadius, flex}">
+        <textarea type="text" style="width: 100%; margin-left: 10px; margin-right: 10px; background-color: white; margin: 15px" v-model="bCode.value" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
             <v-list>
                 <v-list-item v-for="(item, index) in contextMenuItems" :key="index" @click="contextMenuItemClick($event, _self, item, index)">
@@ -42,6 +42,8 @@
                 height: 'auto',
                 minHeight: 40,
                 position: "static",
+                borderRadius: '50px',
+                flex: 1,
                 entering: false,
                 showMenu: false,
                 menuX: 0,
