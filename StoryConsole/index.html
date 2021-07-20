@@ -46,10 +46,10 @@
         <div id = 'consoleScreen' class = 'keep-spaces' tabindex = '0' @keyup = 'keyboardInput'>
             <div v-for = 'text in screenTexts'>
                 <a v-if="text.url" :href="text.url" target="_bloak">{{text.text}}</a>
-                <span v-else-if='text' :style="text.style">{{text.text}}</span>
+                <span v-else-if='text && text.text' :style="text.style">{{text.text}}</span>
                 <br v-else/>
             </div>
-            <span>&rsaquo;{{input}}</span>
+            <span>{{promptChar}}{{input}}<span id="cursor">_</span></span>
         </div>
         <div id = 'buttons'>
             <button class = 'btn' @click="buttonClick" v-for = 'b in buttons'>{{b}}</button>

@@ -1,5 +1,6 @@
 const VERSION = "1.1.0711";
-const DB_VERSION = 1;
+const DB_TABLE_GAME_SAVE_DATA = 'GameSaveData';
+const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";
 const defaultStory = './story/放學回家啦！.zip';
@@ -23,6 +24,12 @@ const SC_NULL = null;
     var storyObj = null
     var SC = null;
 
+    var showCursor = true;
+    setInterval(function(){
+        //因為vue裡updated()中每當畫面有更動時都會強制將畫面滾動至最底下，因此如果將光標閃爍用vue做，每當光標改變時畫面就會被強制將滾動至最底下
+        document.getElementById('cursor').hidden = showCursor = !showCursor;//因為#cursor在vue的範圍裡，因此有很大的機率被更動，因此必須每次都重找
+    }, 500)
+
     var vApp = new Vue({
         el: '#app',
         data: {
@@ -42,7 +49,9 @@ const SC_NULL = null;
                 0,
                 '\u232B',
                 '\u23CE'
-            ]
+            ],
+            showCursor: true,
+            promptChar: '›',
         },
         // computed: {
         //     inputText:{
@@ -110,7 +119,7 @@ const SC_NULL = null;
             inputText(){
                 var text = this.input;
                 this.input = '';
-                this.appebdTextToScreen(text);
+                this.appebdTextToScreen(this.promptChar + text);
                 return text;
             },
             clearScreen(){
@@ -124,7 +133,7 @@ const SC_NULL = null;
 
     var db = null;
     async function openDB(storeName){
-        var p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             var openRequest = indexedDB.open(storeName, DB_VERSION);
             openRequest.onsuccess = function(event) {
                 var db = event.target.result;
@@ -138,11 +147,21 @@ const SC_NULL = null;
             openRequest.onupgradeneeded = function(event){
                 var db = event.target.result;
                 console.log('open upgradeneeded');
-                if(!db.objectStoreNames.contains(storeName))
-                    db.createObjectStore(storeName, { keyPath: "id" });
+                if(!db.objectStoreNames.contains(DB_TABLE_GAME_SAVE_DATA)){
+                    db.createObjectStore(DB_TABLE_GAME_SAVE_DATA, { keyPath: "id" });
+                    if(event.oldVersion == 1){//舊資料轉移
+                        event.target.transaction.oncomplete = function(){
+                            db.transaction([storeName]).objectStore(storeName).getAll().onsuccess = function(event) {
+                                var svaveStore  = db.transaction([DB_TABLE_GAME_SAVE_DATA], 'readwrite').objectStore(DB_TABLE_GAME_SAVE_DATA);
+                                for(let i of event.target.result){
+                                    svaveStore.add(i);
+                                }
+                            };
+                        }
+                    }
+                }
             }
         });
-        return p;
     }
 
 
@@ -487,7 +506,7 @@ const SC_NULL = null;
             });
         }
 
-        var objectStore  = db.transaction([storyObj.story.name], 'readwrite').objectStore(storyObj.story.name);
+        var objectStore  = db.transaction([DB_TABLE_GAME_SAVE_DATA], 'readwrite').objectStore(DB_TABLE_GAME_SAVE_DATA);
 
         objectStore.delete(fileItem);
         objectStore.add({
@@ -533,7 +552,7 @@ const SC_NULL = null;
                 return;
             }
 
-            var objectStore  = db.transaction([storyObj.story.name]).objectStore(storyObj.story.name);
+            var objectStore  = db.transaction([DB_TABLE_GAME_SAVE_DATA]).objectStore(DB_TABLE_GAME_SAVE_DATA);
 
             var request = objectStore.get(fileItem);
             request.onerror = function(event) {
