@@ -1,4 +1,4 @@
-const VERSION = "1.1.0711";
+const VERSION = "1.2.0721";
 const DB_TABLE_GAME_SAVE_DATA = 'GameSaveData';
 const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
@@ -10,13 +10,17 @@ const SC_NULL = null;
 (function (){
     var floorsLine = [];
 
-    var GameStatus = {
+    const GameStatus = {
         RUN: 0, STOP: 1, BREAK: 2, CONTINUE: 3, GOTO: 4
     }
     var gameStatus = GameStatus.RUN;
 
-    var IfStatus = {
+    const IfStatus = {
         CONDITION_NOT_MET: 0, CONDITION_MET: 1
+    }
+
+    const ShowType = {
+        TEXT: 0, IMAGE: 1
     }
 
     var enterDown = false;
@@ -101,8 +105,20 @@ const SC_NULL = null;
                     this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
                 }
             },
+            appebdImageToScreen(image, style = {'max-width': '100%'}){
+                this.screenTexts.push({
+                    image,
+                    style,
+                });
+                if(this.screenTexts.length > this.screenTextLineMax){
+                    this.screenTexts.splice(0, this.screenTexts.length - this.screenTextLineMax);
+                }
+            },
             appebdTextToScreenlastLine(text){
                 text = text.toString();
+                if(this.screenTexts[this.screenTexts.length - 1].image){
+                    this.screenTexts.push({text: '', style: {}});
+                }
                 var lines = text.split(/\n/g).map(i => {
                     let text = {
                         ...this.screenTexts[this.screenTexts.length - 1]
@@ -258,6 +274,11 @@ const SC_NULL = null;
                     await show(command.show, command.args, storyName);
                     if (gameStatus == GameStatus.STOP) return "";
                 }
+                else if (command.showImage != undefined)
+                {
+                    await show(command.showImage, command.args, storyName, ShowType.IMAGE);
+                    if (gameStatus == GameStatus.STOP) return "";
+                }
                 else if (command.sleep != undefined)
                 {
                     await wait(parseInt(eval(command.sleep)) * 1000, command.args);
@@ -395,7 +416,7 @@ const SC_NULL = null;
         }
     }
 
-    async function show(text, args, storyName)
+    async function show(data, args, storyName, type = ShowType.TEXT)
     {
         var f = async function(){
             var f2 = async (resolve, reject) => {
@@ -442,7 +463,18 @@ const SC_NULL = null;
             return new Promise(f2);
         }
         while(gameStatus == GameStatus.RUN){
-            vApp.appebdTextToScreen(eval(text));
+            if(type == ShowType.TEXT){
+                vApp.appebdTextToScreen(eval(data));
+            }else if(type == ShowType.IMAGE){
+                if(args.useSize){
+                    vApp.appebdImageToScreen(data, {
+                        height: args.height,
+                        width: args.width
+                    });
+                }else{
+                    vApp.appebdImageToScreen(data);
+                }
+            }
             if(args && args.notPause) break;
             vApp.appebdTextToScreen(
                 "按enter繼續、按0清空畫面、按1選項",
