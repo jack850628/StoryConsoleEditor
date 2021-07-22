@@ -4,6 +4,7 @@ const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
 // const STORY_DIR = "/story";
 const defaultStory = './story/放學回家啦！.zip';
+const getStoryZipFileContentAPI = 'https://story-console-get-zip.herokuapp.com/?url=';
 // const DBName = 'StoryConsole';
 const SC_NULL = null;
 
@@ -743,9 +744,7 @@ const SC_NULL = null;
         return storyData;
     }
 
-    vApp.appebdTextToScreen('載入中...');
-    let story = new URLSearchParams(location.search).get('story') || defaultStory;
-    loadStoryFileFromZip(story).then(async (storyData) => {
+    function storyLoadedDo(storyData){
         storyObj = storyData;
         // console.log(storyObj);
         if(!window.tryPlayData){
@@ -756,10 +755,24 @@ const SC_NULL = null;
 
         vApp.clearScreen();
         main();
-    }).catch((e) => {
+    }
+    function storyLoadFailDo(e){
         console.error(e);
         vApp.clearScreen();
         vApp.appebdTextToScreen('發生錯誤！遊戲已終止，請重新整理網頁');
-    });
+    }
+
+    vApp.appebdTextToScreen('載入中...');
+    let story = new URLSearchParams(location.search).get('story');
+    if(story){
+        fetch(getStoryZipFileContentAPI + story)
+            .then(data => data.json())
+            .then(storyLoadedDo)
+            .catch(storyLoadFailDo);
+    }else{
+        loadStoryFileFromZip(defaultStory)
+            .then(storyLoadedDo)
+            .catch(storyLoadFailDo);
+    }
 })()
 
