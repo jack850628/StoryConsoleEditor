@@ -276,13 +276,14 @@ window.onload = function(){
                 this.pleaseWaitDialog = true;
                 this.$nextTick(() => {
                     var zip = new JSZip();
+                    let storyName = !this.story.name.match(/^\s*$/g)? this.story.name: 'story';
                     for(let file of story){
-                        console.debug(file)
+                        console.debug(file);
                         zip.file(`${file.name}.json`, file.complete);
                     }
                     zip.generateAsync({type:"blob"}).then((blob) => {
                         this.pleaseWaitDialog = false;
-                        saveAs(blob, "story.zip");
+                        saveAs(blob, storyName + ".zip");
                     }, (err) => {
                         
                     });

@@ -195,7 +195,7 @@ const SC_NULL = null;
         ];
         exit:while (true)
         {
-            switch (await select("     " + storyTitle.name + "               ", option))
+            switch (await select(storyTitle.name, option))
             {
                 case 1:
                     await load(storyTitle.startFrom, storyObj.globalVariable);
@@ -606,21 +606,30 @@ const SC_NULL = null;
         return new Promise(f);
     }
 
-    async function select(title, option, useJsOption = false){
-        vApp.appebdTextToScreen(useJsOption ? eval(title) : title);
-        vApp.appebdTextToScreen('-'.repeat(title.length));
-        let iMap = {}, newI = 1;
+    async function select(title, option, useJsOption = false){//函數中，所有的字串長度都*2，是因為細明體的中文字在畫面上是兩倍的英文字母寬
+        let iMap = {}, newI = 1, optionStr = [], maxLength = 0;
         for (let i = 0 ; i < option.length ; i++){
             if(
                 !option[i].args 
                 || 
                 eval(option[i].args.if)
             ){
-                vApp.appebdTextToScreen(`${newI}. ${useJsOption ? eval(option[i].text) : option[i].text}`);
+                let str = `${newI}. ${useJsOption ? eval(option[i].text) : option[i].text}`;
+                maxLength = Math.max(maxLength, str.length * 2);
+                optionStr.push(str);
                 iMap[newI++] = i + 1;
             }
         }
-        vApp.appebdTextToScreen('-'.repeat(title.length));
+        title = useJsOption ? eval(title) : title;
+        maxLength = Math.max(maxLength, title.length * 2) + 4;
+        
+        let padding = maxLength - title.length * 2;
+        padding = Math.floor(padding / 2);
+
+        vApp.appebdTextToScreen(' '.repeat(padding) + title + ' '.repeat(padding));
+        vApp.appebdTextToScreen('-'.repeat(maxLength))
+        optionStr.forEach(i => vApp.appebdTextToScreen(i));
+        vApp.appebdTextToScreen('-'.repeat(maxLength));
 
         var f = function(resolve, reject){
             selection  = -1;
