@@ -439,7 +439,7 @@ const SC_NULL = null;
                     ];
                     while (true)
                     {
-                        selected = await select("    選項      ", option);
+                        selected = await select("選項", option);
                         if(selected == 1){
                             resolve();
                             break;
@@ -519,7 +519,7 @@ const SC_NULL = null;
             {text: "記錄檔5"},
             {text: "返回"},
         ];
-        var fileItem = await select("    選擇記錄檔       ", option);
+        var fileItem = await select("選擇記錄檔", option);
         if (fileItem == 6) return;
 
         let globalVariable = [];
@@ -554,7 +554,7 @@ const SC_NULL = null;
             {text: "繼續遊戲"},
             {text: "離開遊戲"},
         ];
-        switch (await select("請問您現在要?     ", option))
+        switch (await select("請問您現在要?", option))
         {
             case 1:
                 return;
@@ -580,7 +580,7 @@ const SC_NULL = null;
                 {text: "記錄檔5"},
                 {text: "返回"},
             ];
-            var fileItem = await select("    選擇記錄檔       ", option);
+            var fileItem = await select("選擇記錄檔", option);
             if (fileItem == 6){
                 resolve(null);
                 return;
@@ -667,13 +667,20 @@ const SC_NULL = null;
         }
         option.push({ text: "反回" });
         while(true){
-            let selected = await select("    人物介紹      ", option);
+            let selected = await select("人物介紹", option);
             if (1 <= selected && selected < option.length)
             {
-                vApp.appebdTextToScreen("--------------------------------------");
-                vApp.appebdTextToScreen("             " + storyObj.character[selected - 1].name);
+                let name = storyObj.character[selected - 1].name;
+                let maxLength = name.length * 2;
+                storyObj.character[selected - 1].detailed.split('\n').forEach( i => maxLength = Math.max(i.length * 2, maxLength));
+                let padding = maxLength - name.length * 2;
+                padding = Math.floor(padding / 2);
+                
+                vApp.appebdTextToScreen('-'.repeat(maxLength))
+                vApp.appebdTextToScreen(' '.repeat(padding) + name + ' '.repeat(padding));
                 vApp.appebdTextToScreen(storyObj.character[selected - 1].detailed);
-                vApp.appebdTextToScreen("--------------------------------------");
+                vApp.appebdTextToScreen('-'.repeat(maxLength));
+
                 await readLine();
             }
             else if (selected == option.length)
@@ -686,10 +693,10 @@ const SC_NULL = null;
     async function about()
     {
         vApp.appebdTextToScreen("                    關於");
-        vApp.appebdTextToScreen("-------------------------------------------");
+        vApp.appebdTextToScreen("--------------------------------------------");
         if(storyObj.about){//這是兼容舊版本的故事檔，about是在ver: 1.1.0704版本時加入
-            vApp.appebdTextToScreen("                      故事");
-            vApp.appebdTextToScreen("                ---------------");
+            vApp.appebdTextToScreen("                    故事");
+            vApp.appebdTextToScreen("              ----------------");
             for (let i of storyObj.about)
             {
                 if(i.aboutText){
@@ -700,13 +707,13 @@ const SC_NULL = null;
             }
         }
         vApp.appebdTextToScreen("                  遊戲框架");
-        vApp.appebdTextToScreen("                ---------------");
+        vApp.appebdTextToScreen("              ----------------");
         vApp.appebdTextToScreen("         StoryConsole Web Version");
         vApp.appebdTextToScreen("這是一套作者作好玩的Console文字冒險遊戲框架");
         vApp.appebdTextToScreen("作者：jack850628");
         vApp.appebdTextToScreen("版本：" + VERSION);
         vApp.appebdLinkToScreen('https://home.gamer.com.tw/artwork.php?sn=5027945', '想要試試看做自己的Console風格文字冒險遊戲嗎？');
-        vApp.appebdTextToScreen("-------------------------------------------");
+        vApp.appebdTextToScreen("--------------------------------------------");
         await readLine();
     }
 
