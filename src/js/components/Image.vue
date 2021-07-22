@@ -2,28 +2,14 @@
     <div class="block" draggable="true" @drag.stop="drag" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave" @dragover.prevent @contextmenu.stop="contextMenu" :style="{position, top: mTop, left: mLeft, width, minHeight, backgroundColor: !entering ? backgroundColor : 'chocolate'}">
         <div>
             <div style="display: flex; flex-direction: column;">
-                <span>顯示圖片:</span>
-                <select v-model="imageName" @mousedown.stop="" style="background-color: white;">
-                    <option value="">*選擇圖片*</option>
-                    <option v-for="(image, index) in $root.images" :key="index" :value="image.name">{{image.name}}</option>
-                </select>
-                <div style="display: flex; justify-content: center;">
-                    <img :src="imageSrc" :style="{height: args.useSize? args.height: 'auto', width: args.useSize? args.width: 'auto', 'max-width': '100%', position: 'relative'}">
+                <div style="display: flex; margin: 10px">
+                    <span>名稱: </span>
+                    <input type="text" style="background-color: white; width: 100%; margin-left: 10px; margin-right: 10px;" v-model="name" @drop.stop="drop" @dragstart.stop="dragstart" @dragend.stop="dragend" @dragenter.stop="dragenter" @dragleave.stop="dragleave"/>
                 </div>
-            </div>
-            <div>
-                <input type="checkbox" :id="`use-size-${_uid}`" v-model="args.useSize">
-                <label :for="`use-size-${_uid}`">自訂大小</label>
-            </div>
-            <div>
-                <span>寬度:</span>
-                <input type="number" v-model="args.width" style="background-color: white; rgin-left: 10px; margin-right: 10px;" :disabled="!args.useSize">
-                <span>高度:</span>
-                <input type="number" v-model="args.height" style="background-color: white; argin-left: 10px; margin-right: 10px;" :disabled="!args.useSize">
-            </div>
-            <div>
-                <input type="checkbox" :id="`not-pause-${_uid}`" v-model="args.notPause">
-                <label :for="`not-pause-${_uid}`">不等待輸入</label>
+                <div style="display: flex; justify-content: center;">
+                    <img :src="imageSrc" :style="{height: args.useSize? args.height: 'auto', width:'auto', 'max-width': '100%', position: 'relative'}">
+                </div>
+                <v-btn v-show="!isDemo" @click="selectImage">選擇圖片</v-btn>
             </div>
         </div>
         <v-menu v-model="showMenu" :position-x="menuX" :position-y="menuY" absolute offset-y>
@@ -42,7 +28,11 @@
 
     export default {
         props: {
-            imageName: {
+            src: {
+                type: String,
+                default: '',
+            },
+            name: {
                 type: String,
                 default: '',
             },
@@ -61,20 +51,23 @@
             ...new BlockBase(),
         },
         watch: {
+            name(val){
+                this.$emit('update:name', val);
+            },
             args: {
                 handler(val){
                     this.$emit('update:args', val);
                 },
                 deep: true
-            },
-            imageName(val){
-                this.$emit('update:imageName', val);
             }
         },
         computed:{
             imageSrc: {
                 get(){
-                    return this.$root.images.find(i => i.name == this.imageName)?.image;
+                    return this.src;
+                },
+                set(val){
+                    this.$emit('update:src', val);
                 }
             }
         },
@@ -90,15 +83,12 @@
                 showMenu: false,
                 menuX: 0,
                 menuY: 0,
+                fileSecector: null,
+                imageView: null,
                 data(){
                     return ({
-                        showImage: '',
-                        args:{
-                            notPause: false,
-                            useSize: false,
-                            width: 30,
-                            height: 30
-                        }
+                        image: '',
+                        name: ''
                     });
                 }
             })
@@ -148,7 +138,13 @@
                 this.$nextTick(() => {
                     this.showMenu = true
                 })
-            }
+            },
+        },
+        mounted(){
+            this.fileSecector = document.createElement('input');
+            this.fileSecector.type = 'file';
+            this.fileSecector.accept = 'image/*';
+            this.fileSecector.onchange = this.selectedImage;
         }
     };
 </script>

@@ -66,6 +66,14 @@
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </template>
+                            <template v-else-if="fileName == DEFAULT_FILE_NAMES.IMAGE">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>圖片</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <sc-image :is-demo="true" @drag="drag" @dragstart="dragstart" @dragend="dragend"></sc-image>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </template>
                             <template v-else-if="fileName == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE">
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>字串</v-expansion-panel-header>

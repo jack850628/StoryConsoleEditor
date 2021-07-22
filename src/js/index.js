@@ -65,6 +65,10 @@ window.onload = function(){
                     '人物介紹'
                 ),
                 new OpenedPagesItem(
+                    DEFAULT_FILE_NAMES.IMAGE,
+                    '圖片'
+                ),
+                new OpenedPagesItem(
                     DEFAULT_FILE_NAMES.GLOBAL_VARIABLE,
                     '全域變數'
                 )
@@ -233,15 +237,7 @@ window.onload = function(){
             },
             iframeOnLoad({target: iframe}, name){
                 var storyData = story.filter(item => item.name == name)[0];
-                if(!storyData && [DEFAULT_FILE_NAMES.ABOUT].includes(name)){//這是兼容舊版本的故事檔，DEFAULT_FILE_NAMES.ABOUT是在ver: 1.1.0704版本時加入
-                    storyData = {
-                        name: name,
-                        complete: JSON.stringify([]),
-                        edit: [],
-                    };
-                    story.push(storyData);
-                }
-                iframe.contentWindow.SCEditor.load(name, storyData, JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE)[0].complete), [...this.storyFile], eventBus);
+                iframe.contentWindow.SCEditor.load(name, storyData, JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE)[0].complete), JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.IMAGE)[0].complete), [...this.storyFile], eventBus);
             },
             openFileMenu(event, index){
                 this.showFileMenuRightClickItemIndex = index;
@@ -358,7 +354,16 @@ window.onload = function(){
                         }else if(name == DEFAULT_FILE_NAMES.STORY){
                             this.story = JSON.parse(data);
                         }
-                    } 
+                    }
+                    for(let name of [DEFAULT_FILE_NAMES.ABOUT, DEFAULT_FILE_NAMES.IMAGE]){//這是兼容舊版本的故事檔，DEFAULT_FILE_NAMES.ABOUT是在ver: 1.1.0704版本時加入， DEFAULT_FILE_NAMES.IMAGE是在ver: 1.2.0722版本時加入
+                        if(!story.find(i => i.name == name)){
+                            story.push({
+                                name: name,
+                                complete: JSON.stringify([]),
+                                edit: [],
+                            })
+                        }
+                    }
                     this.pleaseWaitDialog = false;
                     this.drawer = true;
                 });

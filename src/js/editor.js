@@ -14,6 +14,7 @@ import Operator from '@/js/components/Operator.vue';
 import UnaryOperator from '@/js/components/UnaryOperator.vue';
 import Show from '@/js/components/Show.vue';
 import ShowImage from '@/js/components/ShowImage.vue';
+import SCImage from '@/js/components/Image.vue';
 import Trash from '@/js/components/Trash.vue';
 import _String from '@/js/components/String.vue';
 import _Number from '@/js/components/Number.vue';
@@ -46,6 +47,7 @@ Vue.component('operator', Operator);
 Vue.component('unary-operator', UnaryOperator);
 Vue.component('show', Show);
 Vue.component('show-image', ShowImage);
+Vue.component('sc-image', SCImage);
 Vue.component('trash', Trash);
 Vue.component('string', _String);
 Vue.component('number', _Number);
@@ -69,9 +71,12 @@ Vue.component('aboutLink', AboutLink);
 
 // Vue.use(Vuex);
 
-export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
+export function load(fileName, codeTree, globalVariables, images, storyFile, eventBus){
     var globalVariableUpdate = function(event){
         app.$data.globalVariables = event.detail;
+    };
+    var imageUpdate = function(event){
+        app.$data.images = event.detail;
     };
     var storyFileUpdate = function({detail}){
         switch(detail.type){
@@ -103,6 +108,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
             esprima,
             eventBus,
             globalVariables,
+            images,
             storyFile,
             dragingNode: null,
             codeTree: codeTree.edit,
@@ -257,6 +263,8 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
                 codeTree.complete = JSON.stringify(codeTree.edit);
                 if(fileName == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE){
                     eventBus.$emit(EVENT.UPDATE_VARIABLE.NAME, JSON.parse(codeTree.complete));
+                }else if(fileName == DEFAULT_FILE_NAMES.IMAGE){
+                    eventBus.$emit(EVENT.UPDATE_IMAGE.NAME, JSON.parse(codeTree.complete));
                 }
                 eventBus.$emit(EVENT.FILE_STATUS.NAME, {
                     type: EVENT.FILE_STATUS.TYPE.SAVED,
@@ -278,6 +286,7 @@ export function load(fileName, codeTree, globalVariables, storyFile, eventBus){
 
     eventBus.$on(EVENT.UPDATE_VARIABLE.NAME, globalVariableUpdate);
     eventBus.$on(EVENT.UPDATE_STORY_FILE.NAME, storyFileUpdate);
+    eventBus.$on(EVENT.UPDATE_IMAGE.NAME, imageUpdate);
     // window.onbeforeunload = function(){
     //     eventBus.$off('updateVariable', globalVariableUpdate);
     // };

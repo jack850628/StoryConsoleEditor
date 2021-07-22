@@ -33,6 +33,12 @@ class OldDriver {
         
       }
     },
+    UPDATE_IMAGE: {
+      NAME: 'UPDATE_IMAGE',
+      TYPE: {
+        
+      }
+    },
     FILE_STATUS: {
       NAME: 'UPDATE_STORY_FILE',
       TYPE: {

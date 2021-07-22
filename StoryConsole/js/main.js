@@ -1,4 +1,4 @@
-const VERSION = "1.2.0721";
+const VERSION = "1.2.0722";
 const DB_TABLE_GAME_SAVE_DATA = 'GameSaveData';
 const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
@@ -277,7 +277,8 @@ const SC_NULL = null;
                 }
                 else if (command.showImage != undefined)
                 {
-                    await show(command.showImage, command.args, storyName, ShowType.IMAGE);
+
+                    await show(storyObj.image.find(i => i.name == command.showImage)?.image, command.args, storyName, ShowType.IMAGE);
                     if (gameStatus == GameStatus.STOP) return "";
                 }
                 else if (command.sleep != undefined)
@@ -677,10 +678,10 @@ const SC_NULL = null;
     {
         vApp.appebdTextToScreen("                    關於");
         vApp.appebdTextToScreen("-------------------------------------------");
-        if(storyObj.about){
+        if(storyObj.about){//這是兼容舊版本的故事檔，about是在ver: 1.1.0704版本時加入
             vApp.appebdTextToScreen("                      故事");
             vApp.appebdTextToScreen("                ---------------");
-            for (let i of storyObj.about)//這是兼容舊版本的故事檔，about是在ver: 1.1.0704版本時加入
+            for (let i of storyObj.about)
             {
                 if(i.aboutText){
                     vApp.appebdTextToScreen(i.aboutText);

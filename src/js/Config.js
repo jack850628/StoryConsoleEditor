@@ -12,4 +12,5 @@ export const DEFAULT_FILE_NAMES = {
     CHARACTER: 'character',
     GLOBAL_VARIABLE: 'globalVariable',
     ABOUT: 'about',
+    IMAGE: 'image',
 }
