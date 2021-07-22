@@ -143,7 +143,7 @@
                     </v-tabs>
                     <v-tabs-items v-model="openedPageIndex" dark>
                         <v-tab-item v-for="(item, index) in openedPages" :key="index">
-                          <iframe class="editor" src="./editor.html" @load="iframeOnLoad($event, item.name)"></iframe>
+                          <iframe class="editor" src="./editor.html" :key="item.name" @load="iframeOnLoad($event, item.name)"></iframe>
                         </v-tab-item>
                     </v-tabs-items>
                 </template>
