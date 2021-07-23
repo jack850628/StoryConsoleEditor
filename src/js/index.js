@@ -11,6 +11,10 @@ const JSZip = require('jszip');
 const JSZipUtils = require('jszip-utils');
 const PACKAGE = require('../../package.json');
 
+const DB_NAME = 'StoryConsoleEditor';
+const DB_VERSION = 1;
+const DB_TABLE_NAME = 'GameDataTemp';
+
 export var story = [
     
 ];
@@ -28,11 +32,44 @@ export var story = [
 //   },
 // });
 
+var db = null;
+    async function openDB(){
+        return new Promise((resolve, reject) => {
+            var openRequest = indexedDB.open(DB_NAME, DB_VERSION);
+            openRequest.onsuccess = function(event) {
+                var db = event.target.result;
+                console.debug('open success');
+                resolve(db);
+            };
+
+            openRequest.onerror = function(event) {
+                console.error(event.target.errorCode);
+            };
+            openRequest.onupgradeneeded = function(event){
+                var db = event.target.result;
+                console.debug('open upgradeneeded');
+                if(!db.objectStoreNames.contains(DB_TABLE_NAME)){
+                    db.createObjectStore(DB_TABLE_NAME, {keyPath: "id" });
+                }
+            }
+        });
+    }
+
+function saveToDB(){
+    let objectStore = db.transaction([DB_TABLE_NAME], 'readwrite').objectStore(DB_TABLE_NAME);
+
+    objectStore.delete(0);
+    objectStore.add({
+        id: 0,
+        story: story
+    });
+}
+
 window.onload = function(){
 
     var fileStatusChanged = function({detail}){
-        let [page] = app.$data.openedPages.filter((item) => item.name == detail.fileName);
-        let [file] = app.files.filter((item) => item.name == detail.fileName);
+        let page = app.$data.openedPages.find((item) => item.name == detail.fileName);
+        let file = app.files.find((item) => item.name == detail.fileName);
         switch(detail.type){
             case EVENT.FILE_STATUS.TYPE.MODIFIED: {
                 file.modified = page.modified = true;
@@ -40,6 +77,7 @@ window.onload = function(){
             }
             case EVENT.FILE_STATUS.TYPE.SAVED: {
                 file.modified = page.modified = false;
+                saveToDB();
                 break;
             }
         }
@@ -82,6 +120,7 @@ window.onload = function(){
             },
             storyDialog: false,
             pleaseWaitDialog: false,
+            snackbar: false,
             openedPageIndex: null,
             storyFileDialog: false,
             fileMenuX: 0,
@@ -139,7 +178,7 @@ window.onload = function(){
         watch: {
             story: {
                 handler(val){
-                    story.filter(item => item.name == DEFAULT_FILE_NAMES.STORY)[0].complete = JSON.stringify(val);
+                    story.find(item => item.name == DEFAULT_FILE_NAMES.STORY).complete = JSON.stringify(val);
                 },
                 deep: true,
             }
@@ -182,11 +221,11 @@ window.onload = function(){
                     }
                     case this.storyFileDialogData.TYPE.EDIT_NAME.title:{
                         let oldName = this.storyFile[this.showFileMenuRightClickItemIndex].name;
-                        let [page] = this.openedPages.filter((item) => item.name == oldName);
+                        let page = this.openedPages.find((item) => item.name == oldName);
                         if(page){
                             page.name = page.alias = this.storyFileDialogData.name
                         }
-                        story.filter(i => i.name == oldName)[0].name = this.storyFileDialogData.name;
+                        story.find(i => i.name == oldName).name = this.storyFileDialogData.name;
                         this.storyFile[this.showFileMenuRightClickItemIndex].name =  this.storyFileDialogData.name;
                         if(this.story.startFrom == oldName){
                             this.story.startFrom = this.storyFileDialogData.name;
@@ -236,8 +275,14 @@ window.onload = function(){
                 this.openedPages.splice(index, 1);
             },
             iframeOnLoad({target: iframe}, name){
-                var storyData = story.filter(item => item.name == name)[0];
-                iframe.contentWindow.SCEditor.load(name, storyData, JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE)[0].complete), JSON.parse(story.filter(item => item.name == DEFAULT_FILE_NAMES.IMAGE)[0].complete), [...this.storyFile], eventBus);
+                iframe.contentWindow.SCEditor.load(
+                    name, 
+                    story.find(item => item.name == name), 
+                    JSON.parse(story.find(item => item.name == DEFAULT_FILE_NAMES.GLOBAL_VARIABLE).complete), 
+                    JSON.parse(story.find(item => item.name == DEFAULT_FILE_NAMES.IMAGE).complete), 
+                    [...this.storyFile], 
+                    eventBus
+                );
             },
             openFileMenu(event, index){
                 this.showFileMenuRightClickItemIndex = index;
@@ -288,6 +333,40 @@ window.onload = function(){
                         
                     });
                 });
+            },
+            storyDialogClose(){
+                this.storyDialog = !this.storyDialog;
+                saveToDB();
+            },
+            loadFromBD(){
+                var objectStore = db.transaction([DB_TABLE_NAME]).objectStore(DB_TABLE_NAME);
+                var request = objectStore.get(0);
+                
+                this.snackbar = false;
+                this.pleaseWaitDialog = true;
+
+                request.onerror = function(event) {
+                    this.pleaseWaitDialog = false;
+                }.bind(this);
+                request.onsuccess = async function(event) {
+                    this.pleaseWaitDialog = false;
+                    if(request.result){
+                        let defaultFileNames = [];
+
+                        story = request.result.story;
+                        for(let key in DEFAULT_FILE_NAMES){
+                            defaultFileNames.push(DEFAULT_FILE_NAMES[key]);
+                        }
+                        for(let file of story){
+                            console.debug(file.name);
+                            if(!(defaultFileNames.includes(file.name))){
+                                this.storyFile.push(new StoryFileItem(file.name));
+                            }else if(file.name == DEFAULT_FILE_NAMES.STORY){
+                                this.story = JSON.parse(file.complete);
+                            }
+                        }
+                    }
+                }.bind(this);
             }
         },
         mounted(){
@@ -369,6 +448,17 @@ window.onload = function(){
                     this.drawer = true;
                 });
             }.bind(this);
+
+            openDB().then((result) => {
+                db = result;
+                var objectStore = db.transaction([DB_TABLE_NAME]).objectStore(DB_TABLE_NAME);
+                var request = objectStore.get(0);
+
+                request.onsuccess = async function(event) {
+                    if(request.result)
+                        this.snackbar = true;
+                }.bind(this);
+            });
         }
     });
 

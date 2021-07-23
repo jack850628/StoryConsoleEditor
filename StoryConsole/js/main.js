@@ -1,4 +1,4 @@
-const VERSION = "1.2.0722";
+const VERSION = "1.2.0723";
 const DB_TABLE_GAME_SAVE_DATA = 'GameSaveData';
 const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
@@ -154,7 +154,7 @@ const SC_NULL = null;
             var openRequest = indexedDB.open(storeName, DB_VERSION);
             openRequest.onsuccess = function(event) {
                 var db = event.target.result;
-                console.log('open success');
+                console.debug('open success');
                 resolve(db);
             };
 
@@ -163,7 +163,7 @@ const SC_NULL = null;
             };
             openRequest.onupgradeneeded = function(event){
                 var db = event.target.result;
-                console.log('open upgradeneeded');
+                console.debug('open upgradeneeded');
                 if(!db.objectStoreNames.contains(DB_TABLE_GAME_SAVE_DATA)){
                     db.createObjectStore(DB_TABLE_GAME_SAVE_DATA, { keyPath: "id" });
                     if(event.oldVersion == 1){//舊資料轉移
@@ -210,7 +210,7 @@ const SC_NULL = null;
                     if (saveFile)
                     {
                         floorsLine = saveFile.floorsLine;
-                        await load(saveFile.stoeyName, saveFile.globalVariable);
+                        await load(saveFile.storyName, saveFile.globalVariable);
                     }
                     break;
                 case 3:
@@ -540,12 +540,12 @@ const SC_NULL = null;
             });
         }
 
-        var objectStore  = db.transaction([DB_TABLE_GAME_SAVE_DATA], 'readwrite').objectStore(DB_TABLE_GAME_SAVE_DATA);
+        var objectStore = db.transaction([DB_TABLE_GAME_SAVE_DATA], 'readwrite').objectStore(DB_TABLE_GAME_SAVE_DATA);
 
         objectStore.delete(fileItem);
         objectStore.add({
             id: fileItem,
-            stoeyName: storyName,
+            storyName: storyName,
             floorsLine: floorsLine,
             globalVariable: globalVariable
         });
@@ -586,7 +586,7 @@ const SC_NULL = null;
                 return;
             }
 
-            var objectStore  = db.transaction([DB_TABLE_GAME_SAVE_DATA]).objectStore(DB_TABLE_GAME_SAVE_DATA);
+            var objectStore = db.transaction([DB_TABLE_GAME_SAVE_DATA]).objectStore(DB_TABLE_GAME_SAVE_DATA);
 
             var request = objectStore.get(fileItem);
             request.onerror = function(event) {

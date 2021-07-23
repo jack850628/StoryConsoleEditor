@@ -92,7 +92,12 @@
           
             <v-app-bar color="#666666" dark app>
                 <v-app-bar-nav-icon @click="drawerClose"></v-app-bar-nav-icon>
-                <v-toolbar-title>Story Console故事編輯器</v-toolbar-title>
+                <v-toolbar-title>
+                    <span v-show="!story.name.match(/^\s*$/)">
+                        {{story.name}} - 
+                    </span>
+                    Story Console故事編輯器
+                </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -182,7 +187,7 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary" text  @click="storyDialog = !storyDialog">
+                            <v-btn color="primary" text  @click="storyDialogClose">
                                 完成
                             </v-btn>
                         </v-card-actions>
@@ -218,6 +223,17 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
+                <v-snackbar v-model="snackbar">
+                    <span>要讀回上次的編輯紀錄嗎？</span>
+                    <template v-slot:action="{ attrs }">
+                        <v-btn color="#1e95e9" text v-bind="attrs" @click="loadFromBD" >
+                            <span>好</span>
+                        </v-btn>
+                        <v-btn color="#e91e63" text v-bind="attrs" @click="snackbar = false" >
+                            <span>不了</span>
+                        </v-btn>
+                    </template>
+                </v-snackbar>
             </v-main>
           
             <!-- <v-footer app>
