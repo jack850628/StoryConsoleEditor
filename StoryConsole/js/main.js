@@ -283,7 +283,7 @@ const SC_NULL = null;
                 }
                 else if (command.sleep != undefined)
                 {
-                    await wait(parseInt(eval(command.sleep)) * 1000, command.args);
+                    await wait(eval(command.sleep) * 1000, command.args);
                 }
                 else if (command.select != undefined)
                 {
@@ -489,15 +489,22 @@ const SC_NULL = null;
     }
 
     async function wait(time, args)
-    {   
+    {
+        let count = parseInt(time / 1000);
+        let previousTime = Date.now();
         vApp.appebdTextToScreen('');
         var f = function(resolve, reject){
             if(time > 0){
-                setTimeout(() => f(resolve, reject), 1000);
-                time -= 1000;
-                if(!args || !args.notShowDot) vApp.appebdTextToScreenlastLine('.');
+                let nowTime = Date.now();
+                let dt = nowTime - previousTime;
+                previousTime = nowTime;
+                if(count >= time / 1000){
+                    if(!args || !args.notShowDot) vApp.appebdTextToScreenlastLine('.');
+                    count--;
+                }
+                setTimeout(() => f(resolve, reject));
+                time -= dt;
             }else{
-                vApp.appebdTextToScreen('');
                 resolve();
             }
         }
