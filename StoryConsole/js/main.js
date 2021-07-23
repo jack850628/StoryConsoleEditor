@@ -781,15 +781,9 @@ const SC_NULL = null;
 
     vApp.appebdTextToScreen('載入中...');
     let story = new URLSearchParams(location.search).get('story');
-    if(story){
-        fetch(getStoryZipFileContentAPI + story)
-            .then(data => data.json())
-            .then(storyLoadedDo)
-            .catch(storyLoadFailDo);
-    }else{
-        loadStoryFileFromZip(defaultStory)
-            .then(storyLoadedDo)
-            .catch(storyLoadFailDo);
-    }
+    story = story? getStoryZipFileContentAPI + story: defaultStory;
+    loadStoryFileFromZip(story)
+        .then(storyLoadedDo)
+        .catch(storyLoadFailDo);
 })()
 
