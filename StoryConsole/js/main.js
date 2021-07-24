@@ -259,6 +259,7 @@ const SC_NULL = null;
                 gameStatus = GameStatus.RUN;
             }
         }
+        vApp.clearScreen();
     }
 
     async function runStory(commands, storyName, floor){
@@ -489,7 +490,6 @@ const SC_NULL = null;
                             }
                         }else if (selected == 3){
                             gameStatus = GameStatus.STOP;
-                            vApp.clearScreen();
                             resolve();
                             break;
                         }
