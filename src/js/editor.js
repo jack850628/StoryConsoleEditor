@@ -33,8 +33,10 @@ import GoTo from '@/js/components/GoTo.vue';
 import Continue from '@/js/components/Continue.vue';
 import Break from '@/js/components/Break.vue';
 import Clear from '@/js/components/Clear.vue';
-import AboutText from '@/js/components/AboutText.vue'
-import AboutLink from '@/js/components/AboutLink.vue'
+import AboutText from '@/js/components/AboutText.vue';
+import AboutLink from '@/js/components/AboutLink.vue';
+import Call from '@/js/components/Call.vue';
+import BlackCurrentStoryFile from '@/js/components/BlackCurrentStoryFile.vue';
 
 var esprima = require('esprima');
 
@@ -68,6 +70,8 @@ Vue.component('break', Break);
 Vue.component('clear', Clear);
 Vue.component('aboutText', AboutText);
 Vue.component('aboutLink', AboutLink);
+Vue.component('call', Call);
+Vue.component('black-current-story-file', BlackCurrentStoryFile);
 
 // Vue.use(Vuex);
 
@@ -277,8 +281,8 @@ export function load(fileName, codeTree, globalVariables, images, storyFile, eve
             },
 
             debug(){
-                console.log(this.codeTree);
-                console.log(this.tempCodeTree);
+                console.debug(this.codeTree);
+                console.debug(this.tempCodeTree);
             }
         },
     });

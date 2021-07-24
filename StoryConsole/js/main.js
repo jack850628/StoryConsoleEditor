@@ -12,7 +12,7 @@ const SC_NULL = null;
     var floorsLine = [];
 
     const GameStatus = {
-        RUN: 0, STOP: 1, BREAK: 2, CONTINUE: 3, GOTO: 4
+        RUN: 0, STOP: 1, BREAK: 2, CONTINUE: 3, GOTO: 4, BLACK_CURRENT_STORY_FILE: 5
     }
     var gameStatus = GameStatus.RUN;
 
@@ -250,7 +250,7 @@ const SC_NULL = null;
             let commands = storyObj[nextStoryName];
             nextStoryName = await runStory(commands, nextStoryName, 0);
 
-            if (!nextStoryName)
+            if (gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE || !nextStoryName)
             {
                 gameStatus = GameStatus.STOP;
             }
@@ -267,19 +267,17 @@ const SC_NULL = null;
         try
         {
             if(floor >= floorsLine.length) floorsLine.push({ line: 0 });
-            for (; floorsLine[floor].line < commands.length; floorsLine[floor].line++)
+            for (; floorsLine[floor].line < commands.length && gameStatus != GameStatus.STOP; floorsLine[floor].line++)
             {
                 var command = commands[floorsLine[floor].line];
                 if (command.show != undefined)
                 {
                     await show(command.show, command.args, storyName);
-                    if (gameStatus == GameStatus.STOP) return "";
                 }
                 else if (command.showImage != undefined)
                 {
 
                     await show(storyObj.image.find(i => i.name == command.showImage)?.image, command.args, storyName, ShowType.IMAGE);
-                    if (gameStatus == GameStatus.STOP) return "";
                 }
                 else if (command.sleep != undefined)
                 {
@@ -299,7 +297,8 @@ const SC_NULL = null;
                         gameStatus == GameStatus.STOP ||
                         gameStatus == GameStatus.BREAK ||
                         gameStatus == GameStatus.CONTINUE ||
-                        gameStatus == GameStatus.GOTO
+                        gameStatus == GameStatus.GOTO ||
+                        gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE
                     )
                     {
                         return result;
@@ -317,6 +316,39 @@ const SC_NULL = null;
                 {
                     gameStatus = GameStatus.GOTO;
                     return command.goto;
+                }
+                else if(command.call != undefined)
+                {
+                    if(floor == floorsLine.length - 1)
+                        floorsLine[floor].nextStoryName = command.call;
+                    while(true){
+                        let commands = storyObj[floorsLine[floor].nextStoryName];
+                        floorsLine[floor].nextStoryName = await runStory(commands, floorsLine[floor].nextStoryName, floor + 1);//當玩家手動停止遊戲時 gameStatus 會等於 GameStatus.STOP 然後回傳null
+                        
+                        if (floorsLine[floor].nextStoryName === "")//當goto主選單時
+                        {
+                            gameStatus = GameStatus.STOP;
+                            break;
+                        }
+                        else if (gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE)
+                        {
+                            gameStatus = GameStatus.RUN;
+                            break;
+                        }
+                        else if (!floorsLine[floor].nextStoryName)
+                        {
+                            break;
+                        }
+                        else if(gameStatus == GameStatus.GOTO)
+                        {
+                            gameStatus = GameStatus.RUN;
+                        }
+                    }
+                }
+                else if (command.blackCurrentStoryFile)
+                {
+                    gameStatus = GameStatus.BLACK_CURRENT_STORY_FILE;
+                    return null;
                 }
                 else if (command.continue != undefined)
                 {
@@ -338,7 +370,8 @@ const SC_NULL = null;
                             gameStatus == GameStatus.STOP ||
                             gameStatus == GameStatus.BREAK ||
                             gameStatus == GameStatus.CONTINUE ||
-                            gameStatus == GameStatus.GOTO
+                            gameStatus == GameStatus.GOTO ||
+                            gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE
                         )
                         {
                             return result;
@@ -359,7 +392,8 @@ const SC_NULL = null;
                             gameStatus == GameStatus.STOP ||
                             gameStatus == GameStatus.BREAK ||
                             gameStatus == GameStatus.CONTINUE ||
-                            gameStatus == GameStatus.GOTO
+                            gameStatus == GameStatus.GOTO ||
+                            gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE
                         )
                         {
                             return result;
@@ -375,7 +409,8 @@ const SC_NULL = null;
                             gameStatus == GameStatus.STOP || 
                             gameStatus == GameStatus.BREAK || 
                             gameStatus == GameStatus.CONTINUE || 
-                            gameStatus == GameStatus.GOTO
+                            gameStatus == GameStatus.GOTO ||
+                            gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE
                         )
                         {
                             return result;
@@ -394,7 +429,7 @@ const SC_NULL = null;
                                 gameStatus = GameStatus.RUN;
                                 break;
                             }
-                            else if (gameStatus == GameStatus.STOP || gameStatus == GameStatus.GOTO)
+                            else if (gameStatus == GameStatus.STOP || gameStatus == GameStatus.GOTO || gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE)
                             {
                                 return result;
                             }
