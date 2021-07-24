@@ -17,9 +17,9 @@
             </div>
             <div>
                 <span>寬度:</span>
-                <input type="number" v-model="args.width" style="background-color: white; rgin-left: 10px; margin-right: 10px;" :disabled="!args.useSize">
+                <input type="number" v-model="args.width" style="background-color: white; max-width: 100%;" :disabled="!args.useSize">
                 <span>高度:</span>
-                <input type="number" v-model="args.height" style="background-color: white; argin-left: 10px; margin-right: 10px;" :disabled="!args.useSize">
+                <input type="number" v-model="args.height" style="background-color: white; max-width: 100%;" :disabled="!args.useSize">
             </div>
             <div>
                 <input type="checkbox" :id="`not-pause-${_uid}`" v-model="args.notPause">
