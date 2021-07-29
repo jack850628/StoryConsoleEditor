@@ -326,23 +326,23 @@ const SC_NULL = null;
                         let commands = storyObj[floorsLine[floor].nextStoryName];
                         floorsLine[floor].nextStoryName = await runStory(commands, floorsLine[floor].nextStoryName, floor + 1);//當玩家手動停止遊戲時 gameStatus 會等於 GameStatus.STOP 然後回傳null
                         
-                        if (floorsLine[floor].nextStoryName === "")//當goto主選單時
-                        {
-                            gameStatus = GameStatus.STOP;
-                            break;
-                        }
-                        else if (gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE)
+                        if (gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE)
                         {
                             gameStatus = GameStatus.RUN;
                             break;
                         }
-                        else if (!floorsLine[floor].nextStoryName)
+                        else if (gameStatus == GameStatus.GOTO)
+                        {
+                            if (floorsLine[floor].nextStoryName === "")//當goto主選單時
+                            {
+                                gameStatus = GameStatus.STOP;
+                                break;
+                            }
+                            gameStatus = GameStatus.RUN;
+                        }
+                        else if (floorsLine[floor].nextStoryName == null)
                         {
                             break;
-                        }
-                        else if(gameStatus == GameStatus.GOTO)
-                        {
-                            gameStatus = GameStatus.RUN;
                         }
                     }
                 }
@@ -450,7 +450,7 @@ const SC_NULL = null;
         }
         finally
         {
-            floorsLine.splice(floor, 1);
+            floorsLine.pop();
         }
     }
 
