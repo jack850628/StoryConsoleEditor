@@ -29,11 +29,11 @@ const SC_NULL = null;
     var storyObj = null
     var SC = null;
 
-    var showCursor = true;
-    setInterval(function(){
-        //因為vue裡updated()中每當畫面有更動時都會強制將畫面滾動至最底下，因此如果將光標閃爍用vue做，每當光標改變時畫面就會被強制將滾動至最底下
-        document.getElementById('cursor').hidden = showCursor = !showCursor;//因為#cursor在vue的範圍裡，因此有很大的機率被更動，因此必須每次都重找
-    }, 500)
+    // var showCursor = true;
+    // setInterval(function(){
+    //     //因為vue裡updated()中每當畫面有更動時都會強制將畫面滾動至最底下，因此如果將光標閃爍用vue做，每當光標改變時畫面就會被強制將滾動至最底下
+    //     document.getElementById('cursor').hidden = showCursor = !showCursor;//因為#cursor在vue的範圍裡，因此有很大的機率被更動，因此必須每次都重找
+    // }, 500)
 
     var vApp = new Vue({
         el: '#app',

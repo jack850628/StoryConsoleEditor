@@ -40,6 +40,20 @@
         .keep-spaces { 
             white-space: pre-wrap; 
         }
+        #input-text::after{
+            content: "_";
+            /* border-left: 1px solid; */
+            animation: cursor 1S infinite;
+        }
+
+        @keyframes cursor {
+            0%, 100%{
+                opacity: 0;
+            }
+            50%{
+                opacity: 100;
+            }
+        }
     </style>
 </head>
 <body>
@@ -51,7 +65,7 @@
                 <span v-else-if='text && text.text' :style="text.style">{{text.text}}</span>
                 <br v-else/>
             </div>
-            <span>{{promptChar}}{{input}}<span id="cursor">_</span></span>
+            <span id="input-text">{{promptChar}}{{input}}</span>
         </div>
         <div id = 'buttons'>
             <button class = 'btn' @click="buttonClick" v-for = 'b in buttons'>{{b}}</button>
