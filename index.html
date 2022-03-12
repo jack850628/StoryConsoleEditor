@@ -142,7 +142,7 @@
                             <v-badge color="#FFFFFF" :value="item.modified" left dot>
                                 <span>{{item.alias}}</span>
                             </v-badge>
-                            <v-btn icon color="deep-orange" @click="openedPageClose(item.name)">
+                            <v-btn icon color="deep-orange" @click.stop="openedPageClose(item.name)">
                                 <v-icon color="red darken-2">mdi-close</v-icon>
                             </v-btn>
                         </v-tab>
