@@ -6,6 +6,7 @@ function resolve (dir) {
 }
 
 module.exports = {
+    mode: 'production',//'development',
     entry: {
       editor: './src/js/editor.js',
       index: './src/js/index.js'
