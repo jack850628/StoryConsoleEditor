@@ -1,6 +1,6 @@
 <template>
     <div @dragenter.stop="dragenter" @dragleave.stop="dragleave" @drop.stop="drop" @dragover.prevent :style="{flex: 2, minHeight}">
-        <template v-for="(item, index) in code"><!-- 因為template不能設定:key所以將template換成table -->
+        <template v-for="(item, index) in code">
             <show v-if="'show' in item" :index="index" :calculable.sync="item.show" :args.sync="item.args" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></show>
             <show-image v-if="'showImage' in item" :index="index" :image-name.sync="item.showImage" :args.sync="item.args" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></show-image>
             <exec v-else-if="'exec' in item" :index="index" :calculable.sync="item.exec" @drag="drag" @drop="drop" @dragstart="dragstart" @dragend="dragend" @dragenter="dragenter" @dragleave="dragleave" :context-menu-items="contextMenuItems" :context-menu-item-click="contextMenuItemClick"></exec>
@@ -46,14 +46,10 @@
 
 <script>
     import {TYPE} from '@/js/Config.js';
-import AboutText from './AboutText.vue';
-import AboutLink from './AboutLink.vue';
-import ShowImage from './ShowImage.vue';
 
     var esprima = require('esprima');
 
     export default {
-  components: { AboutText, AboutLink, ShowImage },
         props: {
             bCode: {
                 type: Array,
