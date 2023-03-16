@@ -27,7 +27,19 @@ const SC_NULL = null;
     var enterDown = false;
 
     var storyObj = null
-    var SC = null;
+    var SC = {};
+
+    let allowProperty = [
+        'Math',
+        'alert',
+        'confirm',
+        'prompt',
+        // 'console',
+    ]
+    let eval = (() => {
+        let _eval = getSafeEval(allowProperty);
+        return (code) => _eval(code, {SC});
+    })();
 
     // var showCursor = true;
     // setInterval(function(){
@@ -240,7 +252,9 @@ const SC_NULL = null;
     }
 
     async function load(nextStoryName, globalVariable){
-        SC = {};
+        Reflect.ownKeys(SC).forEach(k => {
+            Reflect.deleteProperty(SC, k);
+        });
         for(let v of globalVariable){
             SC[v.name] = v.value;
         }
