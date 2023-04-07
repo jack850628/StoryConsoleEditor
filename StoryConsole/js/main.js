@@ -1,4 +1,4 @@
-const VERSION = "1.2.0723";
+const VERSION = "1.2.230407";
 const DB_TABLE_GAME_SAVE_DATA = 'GameSaveData';
 const DB_VERSION = 2;
 // const SAVE_DIR = "/save";
@@ -276,7 +276,7 @@ const SC_NULL = null;
         vApp.clearScreen();
     }
 
-    async function runStory(commands, storyName, floor){
+    async function runStory(commands, rootStoryName, floor){
         var ifStatus = IfStatus.CONDITION_NOT_MET;
 
         try
@@ -287,12 +287,12 @@ const SC_NULL = null;
                 var command = commands[floorsLine[floor].line];
                 if (command.show != undefined)
                 {
-                    await show(command.show, command.args, storyName);
+                    await show(command.show, command.args, rootStoryName);
                 }
                 else if (command.showImage != undefined)
                 {
 
-                    await show(storyObj.image.find(i => i.name == command.showImage)?.image, command.args, storyName, ShowType.IMAGE);
+                    await show(storyObj.image.find(i => i.name == command.showImage)?.image, command.args, rootStoryName, ShowType.IMAGE);
                 }
                 else if (command.sleep != undefined)
                 {
@@ -304,7 +304,7 @@ const SC_NULL = null;
                         floorsLine[floor].selecteOptionItem = await select(command.select.title, command.select.option, true) - 1;
                     let result = await runStory(
                         command.select.option[floorsLine[floor].selecteOptionItem].then, 
-                        storyName, 
+                        rootStoryName, 
                         floor + 1
                     );
                     floorsLine[floor].selecteOptionItem = null;
@@ -338,7 +338,7 @@ const SC_NULL = null;
                         floorsLine[floor].nextStoryName = command.call;
                     while(true){
                         let commands = storyObj[floorsLine[floor].nextStoryName];
-                        floorsLine[floor].nextStoryName = await runStory(commands, floorsLine[floor].nextStoryName, floor + 1);//當玩家手動停止遊戲時 gameStatus 會等於 GameStatus.STOP 然後回傳null
+                        floorsLine[floor].nextStoryName = await runStory(commands, rootStoryName, floor + 1);//當玩家手動停止遊戲時 gameStatus 會等於 GameStatus.STOP 然後回傳null
                         
                         if (gameStatus == GameStatus.BLACK_CURRENT_STORY_FILE)
                         {
@@ -380,7 +380,7 @@ const SC_NULL = null;
                     if (floor < floorsLine.length - 1 || eval(command.if))
                     {
                         ifStatus = IfStatus.CONDITION_MET;
-                        let result = await runStory(command.then, storyName, floor + 1);
+                        let result = await runStory(command.then, rootStoryName, floor + 1);
                         if (
                             gameStatus == GameStatus.STOP ||
                             gameStatus == GameStatus.BREAK ||
@@ -402,7 +402,7 @@ const SC_NULL = null;
                     if (floor < floorsLine.length - 1 || ifStatus == IfStatus.CONDITION_NOT_MET && eval(command.elseif))
                     {
                         ifStatus = IfStatus.CONDITION_MET;
-                        var result = await runStory(command.then, storyName, floor + 1);
+                        var result = await runStory(command.then, rootStoryName, floor + 1);
                         if (
                             gameStatus == GameStatus.STOP ||
                             gameStatus == GameStatus.BREAK ||
@@ -419,7 +419,7 @@ const SC_NULL = null;
                 {
                     if (ifStatus == IfStatus.CONDITION_NOT_MET)
                     {
-                        var result = await runStory(command.else, storyName, floor + 1);
+                        var result = await runStory(command.else, rootStoryName, floor + 1);
                         if (
                             gameStatus == GameStatus.STOP || 
                             gameStatus == GameStatus.BREAK || 
@@ -438,7 +438,7 @@ const SC_NULL = null;
                     {
                         if (floor < floorsLine.length - 1 || eval(command.while))
                         {
-                            var result = await runStory(command.then, storyName, floor + 1);
+                            var result = await runStory(command.then, rootStoryName, floor + 1);
                             if (gameStatus == GameStatus.BREAK)
                             {
                                 gameStatus = GameStatus.RUN;
